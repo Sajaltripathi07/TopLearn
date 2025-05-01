@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Course Comparison</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 80px 0;
+            margin-bottom: 50px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hero-title {
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .hero-subtitle {
+            font-weight: 300;
+            margin-bottom: 30px;
+        }
+        
+        .search-box {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .search-box input {
+            border-radius: 30px;
+            padding: 15px 25px;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-box button {
+            border-radius: 30px;
+            padding: 15px 30px;
+            background-color: var(--accent-color);
+            border: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 20px;
+        }
+        
+        .card-title {
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .list-group-item {
+            border: none;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+            background-color: var(--light-color);
+        }
+        
+        .list-group-item:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .section-title {
+            position: relative;
+            margin-bottom: 40px;
+            font-weight: 700;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 50px;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+        
+        .platform-badge {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 20px;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            font-weight: 600;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .platform-badge:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-graduation-cap me-2"></i>Course Comparison
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container text-center">
+            <h1 class="hero-title">Find Your Perfect Course</h1>
+            <p class="hero-subtitle">Compare courses from multiple providers to make the best learning decision</p>
+            
+            <div class="search-box">
+                <form th:action="@{/search}" method="get">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="keyword" 
+                               th:value="${searchTerm}" placeholder="Search for courses...">
+                        <button class="btn btn-light" type="submit">
+                            <i class="fas fa-search me-2"></i>Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title"><i class="fas fa-list me-2"></i>Browse by Topic</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group">
+                            <a th:each="topic : ${topics}" 
+                               th:href="@{/search(keyword=${topic})}" 
+                               class="list-group-item list-group-item-action">
+                                <i class="fas fa-book me-2"></i><span th:text="${topic}"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title"><i class="fas fa-star me-2"></i>Popular Platforms</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap">
+                            <a href="/platform/Udemy" class="platform-badge">
+                                <i class="fab fa-udemy me-2"></i>Udemy
+                            </a>
+                            <a href="/platform/Coursera" class="platform-badge">
+                                <i class="fas fa-graduation-cap me-2"></i>Coursera
+                            </a>
+                            <a href="/platform/edX" class="platform-badge">
+                                <i class="fas fa-university me-2"></i>edX
+                            </a>
+                            <a href="/platform/LinkedIn" class="platform-badge">
+                                <i class="fab fa-linkedin me-2"></i>LinkedIn
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="card-title"><i class="fas fa-info-circle me-2"></i>About This Platform</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Course Comparison helps you find the best online courses by comparing multiple providers and criteria. Our advanced ranking system considers:</p>
+                        <ul>
+                            <li>Content quality and depth</li>
+                            <li>Instructor expertise and teaching style</li>
+                            <li>Value for money</li>
+                            <li>Course structure and organization</li>
+                            <li>Practical exercises and projects</li>
+                            <li>Support quality and community</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Courses Grid -->
+        <div class="row mt-4">
+            <div th:each="course : ${courses}" class="col-md-4">
+                <div class="card course-card">
+                    <div class="card-body">
+                        <span class="badge bg-primary platform-badge" th:text="${course.platform}"></span>
+                        <h5 class="card-title" th:text="${course.title}"></h5>
+                        <h6 class="card-subtitle mb-2 text-muted" th:text="${course.instructor}"></h6>
+                        <p class="card-text" th:text="${course.description}"></p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="badge bg-success" th:text="${course.rating} + ' ★'"></span>
+                                <span class="badge bg-info" th:text="${course.studentCount} + ' students'"></span>
+                            </div>
+                            <div th:if="${course.price != null}">
+                                <span class="badge bg-warning" th:text="'$' + ${#numbers.formatDecimal(course.price, 1, 2)}"></span>
+                            </div>
+                        </div>
+                        <a th:href="${course.url}" class="btn btn-primary mt-2" target="_blank">View Course</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- No Results Message -->
+        <div th:if="${#lists.isEmpty(courses)}" class="text-center my-5">
+            <h3>No courses found</h3>
+            <p>Try a different search term or check back later for new courses.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-graduation-cap me-2"></i>Course Comparison</h5>
+                    <p>Helping learners make informed decisions by comparing courses from multiple providers.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/" class="text-light">Home</a></li>
+                        <li><a href="/search" class="text-light">All Courses</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Contact</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-envelope me-2"></i>support@coursecomparison.com</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="mt-4 mb-4">
+            <div class="text-center">
+                <p>&copy; 2025 Course Comparison. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

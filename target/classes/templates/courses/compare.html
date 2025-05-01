@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Compare Courses</title>
+    <style>
+        .comparison-table th {
+            background-color: #f8f9fa;
+            width: 200px;
+        }
+        .score-badge {
+            font-size: 1.2em;
+            padding: 0.5em 1em;
+        }
+        .course-header {
+            text-align: center;
+            padding: 1rem;
+        }
+        .course-header img {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="layout/main :: body">
+        <div class="content">
+            <div class="row mb-4">
+                <div class="col">
+                    <h2>Course Comparison</h2>
+                </div>
+                <div class="col text-end">
+                    <a href="/courses" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left"></i> Back to Courses
+                    </a>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Criteria</th>
+                            <th th:each="course : ${courses}" class="course-header">
+                                <h5 th:text="${course.title}">Course Title</h5>
+                                <p class="text-muted" th:text="${course.provider}">Provider</p>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>Price</th>
+                            <td th:each="course : ${courses}" class="text-center">
+                                <span class="h5" th:text="${'$' + course.price}">$99.99</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Duration</th>
+                            <td th:each="course : ${courses}" class="text-center">
+                                <span th:text="${course.duration + ' hours'}">10 hours</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Level</th>
+                            <td th:each="course : ${courses}" class="text-center">
+                                <span class="badge bg-secondary" th:text="${course.level}">Intermediate</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Rating</th>
+                            <td th:each="course : ${courses}" class="text-center">
+                                <span class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <span th:text="${#numbers.formatDecimal(course.rating, 1, 1)}">4.5</span>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Content Quality</th>
+                            <td th:each="course : ${courses}" class="text-center">
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" 
+                                         th:style="'width: ' + ${course.contentQuality * 20} + '%'"
+                                         th:text="${#numbers.formatDecimal(course.contentQuality, 1, 1)}">4.5</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Instructor Rating</th>
+                            <td th:each="course : ${courses}" class="text-center">
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" role="progressbar" 
+                                         th:style="'width: ' + ${course.instructorRating * 20} + '%'"
+                                         th:text="${#numbers.formatDecimal(course.instructorRating, 1, 1)}">4.5</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Value for Money</th>
+                            <td th:each="course : ${courses}" class="text-center">
+                                <div class="progress">
+                                    <div class="progress-bar bg-info" role="progressbar" 
+                                         th:style="'width: ' + ${course.valueForMoney * 20} + '%'"
+                                         th:text="${#numbers.formatDecimal(course.valueForMoney, 1, 1)}">4.5</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Course Structure</th>
+                            <td th:each="course : ${courses}" class="text-center">
+                                <div class="progress">
+                                    <div class="progress-bar bg-warning" role="progressbar" 
+                                         th:style="'width: ' + ${course.courseStructure * 20} + '%'"
+                                         th:text="${#numbers.formatDecimal(course.courseStructure, 1, 1)}">4.5</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Practical Exercises</th>
+                            <td th:each="course : ${courses}" class="text-center">
+                                <div class="progress">
+                                    <div class="progress-bar bg-danger" role="progressbar" 
+                                         th:style="'width: ' + ${course.practicalExercises * 20} + '%'"
+                                         th:text="${#numbers.formatDecimal(course.practicalExercises, 1, 1)}">4.5</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Support Quality</th>
+                            <td th:each="course : ${courses}" class="text-center">
+                                <div class="progress">
+                                    <div class="progress-bar bg-primary" role="progressbar" 
+                                         th:style="'width: ' + ${course.supportQuality * 20} + '%'"
+                                         th:text="${#numbers.formatDecimal(course.supportQuality, 1, 1)}">4.5</div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Certificate</th>
+                            <td th:each="course : ${courses}" class="text-center">
+                                <span th:if="${course.hasCertificate}" class="badge bg-success">Yes</span>
+                                <span th:unless="${course.hasCertificate}" class="badge bg-secondary">No</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Language</th>
+                            <td th:each="course : ${courses}" class="text-center">
+                                <span th:text="${course.language}">English</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">MCDM Analysis</h5>
+                            <p class="card-text">
+                                The courses have been ranked using the TOPSIS (Technique for Order of Preference by Similarity to the Ideal Solution) 
+                                method, which considers multiple criteria including content quality, instructor rating, value for money, 
+                                course structure, practical exercises, and support quality.
+                            </p>
+                            <p class="card-text">
+                                The ranking is based on the following weighted criteria:
+                            </p>
+                            <ul>
+                                <li>Content Quality (25%)</li>
+                                <li>Instructor Rating (20%)</li>
+                                <li>Value for Money (15%)</li>
+                                <li>Course Structure (15%)</li>
+                                <li>Practical Exercises (15%)</li>
+                                <li>Support Quality (10%)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

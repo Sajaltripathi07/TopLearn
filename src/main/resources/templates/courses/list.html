@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main}">
+<head>
+    <title>Courses</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .course-card {
+            border: none;
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            height: 100%;
+        }
+        .course-card:hover {
+            transform: translateY(-5px);
+        }
+        .platform-badge {
+            background-color: #6c757d;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+        .search-section {
+            background: linear-gradient(135deg, #4361ee, #3f37c9);
+            color: white;
+            padding: 50px 0;
+            margin-bottom: 30px;
+        }
+        .search-box input {
+            border-radius: 30px;
+            padding: 15px 25px;
+        }
+        .search-box button {
+            border-radius: 30px;
+            padding: 15px 30px;
+        }
+        .filter-section {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <!-- Search Section -->
+        <section class="search-section py-5">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8 text-center">
+                        <h2 class="text-white mb-4">Find Your Perfect Course</h2>
+                        <form th:action="@{/search}" method="get" class="search-box">
+                            <div class="input-group">
+                                <input type="text" name="query" class="form-control" placeholder="Search courses by topic, title, or instructor...">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-search me-2"></i>Search
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="container py-5">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-lg-3">
+                    <!-- Platforms Filter -->
+                    <div class="sidebar-card card">
+                        <div class="card-header">
+                            <i class="fas fa-university me-2"></i>Platforms
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <a th:href="@{/platform/Udemy}" class="list-group-item list-group-item-action">
+                                <i class="fab fa-udemy"></i>Udemy
+                            </a>
+                            <a th:href="@{/platform/Coursera}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-graduation-cap"></i>Coursera
+                            </a>
+                            <a th:href="@{/platform/edX}" class="list-group-item list-group-item-action">
+                                <i class="fas fa-university"></i>edX
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Topics Filter -->
+                    <div class="sidebar-card card">
+                        <div class="card-header">
+                            <i class="fas fa-tags me-2"></i>Topics
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <a th:each="topic : ${topics}" 
+                               th:href="@{/search(query=${topic})}"
+                               class="list-group-item list-group-item-action">
+                                <i class="fas fa-book"></i>
+                                <span th:text="${topic}">Topic</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="col-lg-9">
+                    <!-- Page Title -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>
+                            <span th:if="${platform != null and !#strings.isEmpty(platform)}">
+                                <i class="fas fa-university me-2"></i>
+                                <span th:text="${platform}"></span> Courses
+                            </span>
+                            <span th:if="${topic != null and !#strings.isEmpty(topic)}">
+                                <i class="fas fa-book me-2"></i>
+                                <span th:text="${topic}"></span> Courses
+                            </span>
+                            <span th:if="${(topic == null or #strings.isEmpty(topic)) and (platform == null or #strings.isEmpty(platform))}">
+                                <i class="fas fa-graduation-cap me-2"></i>All Courses
+                            </span>
+                        </h2>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-sort me-2"></i>Sort By
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="?sort=rating">Rating</a></li>
+                                <li><a class="dropdown-item" href="?sort=price">Price</a></li>
+                                <li><a class="dropdown-item" href="?sort=students">Students</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Course Grid -->
+                    <div class="row">
+                        <div th:each="course : ${courses}" class="col-md-6 mb-4">
+                            <div class="card course-card h-100">
+                                <img th:if="${course.imageUrl}" th:src="${course.imageUrl}" class="card-img-top" alt="Course Image">
+                                <div class="card-body">
+                                    <div class="course-meta">
+                                        <span class="platform-badge" th:text="${course.platform}"></span>
+                                        <span class="text-muted">
+                                            <i class="fas fa-clock"></i>
+                                            <span th:text="${course.durationHours + ' hours'}"></span>
+                                        </span>
+                                    </div>
+                                    <h5 class="card-title" th:text="${course.title}">Course Title</h5>
+                                    <p class="card-text" th:text="${#strings.abbreviate(course.description, 150)}">Course description</p>
+                                    <div class="course-stats">
+                                        <span class="course-rating">
+                                            <i class="fas fa-star"></i>
+                                            <span th:text="${#numbers.formatDecimal(course.rating, 1, 1)}">4.5</span>
+                                        </span>
+                                        <span class="course-students">
+                                            <i class="fas fa-users"></i>
+                                            <span th:text="${#numbers.formatInteger(course.studentCount, 0, 'POINT')}">1000</span>
+                                        </span>
+                                        <span class="course-price" th:text="${'$' + #numbers.formatDecimal(course.price, 1, 2)}">$99.99</span>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <a th:href="@{${course.url}}" target="_blank" class="btn btn-primary">
+                                            <i class="fas fa-external-link-alt me-2"></i>View Course
+                                        </a>
+                                        <button class="btn btn-outline-primary" data-bs-toggle="modal" th:data-bs-target="'#courseModal' + ${course.id}">
+                                            <i class="fas fa-info-circle me-2"></i>Details
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <nav th:if="${totalPages > 1}" aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{${currentUrl}(page=${currentPage - 1})}">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+                                th:classappend="${pageNum == currentPage ? 'active' : ''}">
+                                <a class="page-link" th:href="@{${currentUrl}(page=${pageNum})}" th:text="${pageNum + 1}">1</a>
+                            </li>
+                            <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                                <a class="page-link" th:href="@{${currentUrl}(page=${currentPage + 1})}">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Detail Modals -->
+        <div th:each="course : ${courses}" class="modal fade" th:id="'courseModal' + ${course.id}" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" th:text="${course.title}">Course Title</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <p class="mb-4" th:text="${course.description}">Course description</p>
+                                <div class="mb-4">
+                                    <h6 class="mb-3">Course Details</h6>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <p><i class="fas fa-user me-2"></i>Instructor: <span th:text="${course.instructor}"></span></p>
+                                            <p><i class="fas fa-clock me-2"></i>Duration: <span th:text="${course.durationHours + ' hours'}"></span></p>
+                                            <p><i class="fas fa-users me-2"></i>Students: <span th:text="${#numbers.formatInteger(course.studentCount, 0, 'POINT')}"></span></p>
+                                        </div>
+                                        <div class="col-6">
+                                            <p><i class="fas fa-star me-2"></i>Rating: <span th:text="${#numbers.formatDecimal(course.rating, 1, 1)}"></span></p>
+                                            <p><i class="fas fa-tag me-2"></i>Price: <span th:text="${'$' + #numbers.formatDecimal(course.price, 1, 2)}"></span></p>
+                                            <p><i class="fas fa-university me-2"></i>Platform: <span th:text="${course.platform}"></span></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="card-title mb-3">Quality Metrics</h6>
+                                        <div class="mb-3">
+                                            <label>Content Quality</label>
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" 
+                                                     th:style="'width: ' + ${course.contentQuality * 100} + '%'"
+                                                     th:text="${#numbers.formatDecimal(course.contentQuality * 100, 0, 0) + '%'}">90%</div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Instructor Rating</label>
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" 
+                                                     th:style="'width: ' + ${course.instructorRating * 100} + '%'"
+                                                     th:text="${#numbers.formatDecimal(course.instructorRating * 100, 0, 0) + '%'}">85%</div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>Value for Money</label>
+                                            <div class="progress">
+                                                <div class="progress-bar" role="progressbar" 
+                                                     th:style="'width: ' + ${course.valueForMoney * 100} + '%'"
+                                                     th:text="${#numbers.formatDecimal(course.valueForMoney * 100, 0, 0) + '%'}">95%</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a th:href="@{${course.url}}" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-external-link-alt me-2"></i>Enroll Now
+                        </a>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Course Comparison Platform</h5>
+                    <p>Helping learners make informed decisions by comparing courses from multiple providers.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/courses" class="text-light">All Courses</a></li>
+                        <li><a href="/about" class="text-light">About</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Providers</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/courses/platform/Udemy" class="text-light">Udemy</a></li>
+                        <li><a href="/courses/platform/Coursera" class="text-light">Coursera</a></li>
+                        <li><a href="/courses/platform/edX" class="text-light">edX</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

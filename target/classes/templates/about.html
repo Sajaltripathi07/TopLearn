@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>About - Course Comparison Platform</title>
+</head>
+<body>
+    <div th:replace="layout/main :: body">
+        <div class="content">
+            <div class="container py-5">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto">
+                        <h1 class="text-center mb-5">About Course Comparison Platform</h1>
+                        
+                        <div class="card mb-5">
+                            <div class="card-body">
+                                <h2 class="card-title">Our Mission</h2>
+                                <p class="card-text">
+                                    We aim to help learners make informed decisions about their online education by providing 
+                                    comprehensive course comparisons using advanced Multi-Criteria Decision-Making (MCDM) techniques. 
+                                    Our platform aggregates courses from multiple providers and analyzes them based on various 
+                                    important criteria to help you find the perfect match for your learning journey.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="card mb-5">
+                            <div class="card-body">
+                                <h2 class="card-title">MCDM Analysis</h2>
+                                <p class="card-text">
+                                    Our platform uses the TOPSIS (Technique for Order of Preference by Similarity to Ideal Solution) 
+                                    method to rank courses based on multiple criteria:
+                                </p>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Content Quality
+                                        <span class="badge bg-primary rounded-pill">25%</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Instructor Rating
+                                        <span class="badge bg-primary rounded-pill">20%</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Value for Money
+                                        <span class="badge bg-primary rounded-pill">15%</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Course Structure
+                                        <span class="badge bg-primary rounded-pill">15%</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Practical Exercises
+                                        <span class="badge bg-primary rounded-pill">15%</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Support Quality
+                                        <span class="badge bg-primary rounded-pill">10%</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="card mb-5">
+                            <div class="card-body">
+                                <h2 class="card-title">Supported Platforms</h2>
+                                <div class="row text-center">
+                                    <div class="col-md-3 col-6 mb-4">
+                                        <i class="fab fa-udemy fa-3x mb-3"></i>
+                                        <h5>Udemy</h5>
+                                    </div>
+                                    <div class="col-md-3 col-6 mb-4">
+                                        <i class="fas fa-graduation-cap fa-3x mb-3"></i>
+                                        <h5>Coursera</h5>
+                                    </div>
+                                    <div class="col-md-3 col-6 mb-4">
+                                        <i class="fab fa-linkedin fa-3x mb-3"></i>
+                                        <h5>LinkedIn Learning</h5>
+                                    </div>
+                                    <div class="col-md-3 col-6 mb-4">
+                                        <i class="fab fa-aws fa-3x mb-3"></i>
+                                        <h5>AWS Training</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-body">
+                                <h2 class="card-title">Contact Us</h2>
+                                <form>
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Name</label>
+                                        <input type="text" class="form-control" id="name" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="message" class="form-label">Message</label>
+                                        <textarea class="form-control" id="message" rows="4" required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Send Message</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

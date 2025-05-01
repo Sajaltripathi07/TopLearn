@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Platform Courses - Course Comparison</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 40px 0;
+            margin-bottom: 40px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .platform-icon {
+            width: 60px;
+            height: 60px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            border-radius: 50%;
+            margin-right: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .platform-icon i {
+            font-size: 30px;
+            color: var(--primary-color);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 30px;
+            height: 100%;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-body {
+            padding: 25px;
+        }
+        
+        .card-title {
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .card-subtitle {
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+        
+        .card-text {
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+        
+        .badge {
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        .badge.bg-primary {
+            background-color: var(--primary-color) !important;
+        }
+        
+        .badge.bg-success {
+            background-color: #28a745 !important;
+        }
+        
+        .card-footer {
+            background-color: rgba(0, 0, 0, 0.03);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 15px 25px;
+        }
+        
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+            border-radius: 20px;
+            padding: 8px 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-outline-light {
+            color: white;
+            border-color: white;
+            border-radius: 20px;
+            padding: 8px 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-light:hover {
+            background-color: white;
+            color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .alert {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .alert-warning {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: #856404;
+        }
+        
+        .rating {
+            color: #ffc107;
+        }
+        
+        .price {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+        
+        .stats-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .stats-label {
+            font-weight: 500;
+            color: #6c757d;
+        }
+        
+        .topic-badge {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 20px;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            font-weight: 600;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .topic-badge:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 40px 0;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-graduation-cap me-2"></i>Course Comparison
+            </a>
+        </div>
+    </nav>
+    
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="platform-icon">
+                            <i th:if="${platform == 'Udemy'}" class="fab fa-udemy"></i>
+                            <i th:if="${platform == 'Coursera'}" class="fas fa-graduation-cap"></i>
+                            <i th:if="${platform == 'edX'}" class="fas fa-university"></i>
+                            <i th:if="${platform != 'Udemy' && platform != 'Coursera' && platform != 'edX'}" class="fas fa-globe"></i>
+                        </div>
+                        <h1 class="mb-0">Courses on <span th:text="${platform}"></span></h1>
+                    </div>
+                    <p class="lead">Explore all available courses from this platform</p>
+                </div>
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                    <a href="/" class="btn btn-outline-light">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Platform Stats -->
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${courses.size()}">0</div>
+                    <div class="stats-label">Total Courses</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <div class="stats-number">
+                        <span th:if="${!courses.empty}" th:text="${#numbers.formatDecimal(courses.stream().mapToDouble(c -> c.getRating()).average().orElse(0), 1, 1)}">0.0</span>
+                        <span th:if="${courses.empty}">0.0</span>
+                    </div>
+                    <div class="stats-label">Average Rating</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <div class="stats-number">
+                        <span th:if="${!courses.empty}" th:text="${#numbers.formatDecimal(courses.stream().mapToDouble(c -> c.getPrice()).average().orElse(0), 1, 2)}">0.00</span>
+                        <span th:if="${courses.empty}">0.00</span>
+                    </div>
+                    <div class="stats-label">Average Price (USD)</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Topics -->
+        <div class="mb-5">
+            <h4 class="mb-3">Topics Available</h4>
+            <div class="d-flex flex-wrap">
+                <a th:each="topic : ${#strings.arraySplit(#strings.listJoin(courses.![topic].distinct(), ','), ',')}" 
+                   th:href="@{/search(keyword=${topic})}" 
+                   class="topic-badge">
+                    <i class="fas fa-book me-2"></i><span th:text="${topic}"></span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Courses -->
+        <h4 class="mb-4">All Courses</h4>
+        
+        <div th:if="${courses.empty}" class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>No courses found for this platform.
+        </div>
+        
+        <div class="row">
+            <div th:each="course : ${courses}" class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${course.title}"></h5>
+                        <h6 class="card-subtitle mb-3" th:text="${course.instructor}"></h6>
+                        <p class="card-text" th:text="${course.description}"></p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <span class="badge bg-primary me-2" th:text="${course.topic}"></span>
+                                <span class="badge bg-success">
+                                    <i class="fas fa-star me-1"></i><span th:text="${course.rating}"></span>
+                                </span>
+                            </div>
+                            <div class="price" th:text="${course.price + ' USD'}"></div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <small class="text-muted">
+                                    <i class="fas fa-clock me-1"></i><span th:text="${course.durationHours + ' hours'}"></span>
+                                </small>
+                            </div>
+                            <div>
+                                <small class="text-muted">
+                                    <i class="fas fa-users me-1"></i><span th:text="${course.studentCount + ' students'}"></span>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a th:href="${course.url}" target="_blank" class="btn btn-outline-primary">
+                            <i class="fas fa-external-link-alt me-2"></i>View Course
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-graduation-cap me-2"></i>Course Comparison</h5>
+                    <p>Helping learners make informed decisions by comparing courses from multiple providers.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/" class="text-light">Home</a></li>
+                        <li><a href="/search" class="text-light">All Courses</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Contact</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-envelope me-2"></i>support@coursecomparison.com</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="mt-4 mb-4">
+            <div class="text-center">
+                <p>&copy; 2025 Course Comparison. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
