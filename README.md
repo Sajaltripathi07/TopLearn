@@ -1,4 +1,4 @@
-# Course Comparison Platform
+# TopLearn - Course Comparison Platform
 
 A comprehensive course comparison platform built with Spring Boot that uses advanced MCDM (Multi-Criteria Decision Making) algorithms to evaluate and rank courses from multiple online learning platforms.
 
