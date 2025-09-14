@@ -246,17 +246,7 @@ curl -X POST http://localhost:8080/api/performance/update/course/1
 - **MCDM Algorithms**: Algorithm explanation and usage
 - **Performance Tuning**: Optimization recommendations
 
-## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 🙏 Acknowledgments
 
