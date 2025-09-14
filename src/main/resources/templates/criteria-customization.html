@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Customize Your Criteria - Course Comparison Platform</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #10b981;
+            --accent-color: #f59e0b;
+            --dark-color: #1f2937;
+            --light-color: #f8fafc;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-color);
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), #4f46e5);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .criteria-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .criteria-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .weight-slider {
+            width: 100%;
+            margin: 10px 0;
+        }
+        
+        .weight-display {
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .total-weight {
+            background: var(--secondary-color);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .total-weight.warning {
+            background: var(--accent-color);
+        }
+        
+        .total-weight.danger {
+            background: #ef4444;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #4f46e5;
+            transform: translateY(-2px);
+        }
+        
+        .criteria-description {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .criteria-type {
+            background: var(--accent-color);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-graduation-cap me-2"></i>Course Comparison
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="fas fa-home me-1"></i>Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/courses"><i class="fas fa-list me-1"></i>All Courses</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/criteria"><i class="fas fa-sliders-h me-1"></i>Customize Criteria</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Header -->
+                <div class="mb-4">
+                    <h1 class="display-5 fw-bold mb-3">Customize Your Course Criteria</h1>
+                    <p class="lead text-muted">
+                        Set your priorities for course evaluation. Adjust the weights below to reflect what matters most to you.
+                        The total weight must equal 100%.
+                    </p>
+                </div>
+
+                <!-- Criteria Cards -->
+                <div id="criteriaContainer">
+                    <!-- Criteria cards will be loaded here dynamically -->
+                </div>
+
+                <!-- Save Button -->
+                <div class="text-center mt-4">
+                    <button id="savePreferences" class="btn btn-primary btn-lg">
+                        <i class="fas fa-save me-2"></i>Save My Preferences
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <!-- Total Weight Display -->
+                <div class="total-weight mb-4">
+                    <div class="mb-2">Total Weight</div>
+                    <div id="totalWeight">0%</div>
+                </div>
+
+                <!-- Instructions -->
+                <div class="card mb-3">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>How It Works</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Adjust the sliders to set your priorities</li>
+                            <li class="mb-2">Higher weight = more important to you</li>
+                            <li class="mb-2">Total must equal 100%</li>
+                            <li class="mb-2">Click Save to apply your preferences</li>
+                            <li>Get personalized course rankings!</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Presets -->
+                <div class="card mb-3">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Quick Presets</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-secondary" data-preset="beginner"><i class="fas fa-seedling me-2"></i>Beginner</button>
+                            <button class="btn btn-outline-secondary" data-preset="budget"><i class="fas fa-wallet me-2"></i>Budget</button>
+                            <button class="btn btn-outline-secondary" data-preset="fast"><i class="fas fa-bolt me-2"></i>Fast-track</button>
+                            <button class="btn btn-outline-secondary" data-preset="switch"><i class="fas fa-briefcase me-2"></i>Career-switch</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reset Button -->
+                <div class="text-center mt-3">
+                    <button id="resetToDefaults" class="btn btn-outline-secondary">
+                        <i class="fas fa-undo me-2"></i>Reset to Defaults
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2025 Course Comparison Platform. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Global variables
+        let criteriaData = [];
+        let currentWeights = {};
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCriteria();
+            setupEventListeners();
+        });
+        
+        // Load criteria from API
+        async function loadCriteria() {
+            try {
+                const response = await fetch('/api/criteria/customizable');
+                criteriaData = await response.json();
+                
+                // Get current weights
+                const weightsResponse = await fetch('/api/criteria/weights');
+                currentWeights = await weightsResponse.json();
+                
+                renderCriteriaCards();
+                updateTotalWeight();
+            } catch (error) {
+                console.error('Error loading criteria:', error);
+                showError('Failed to load criteria. Please refresh the page.');
+            }
+        }
+        
+        // Render criteria cards
+        function renderCriteriaCards() {
+            const container = document.getElementById('criteriaContainer');
+            container.innerHTML = '';
+            
+            criteriaData.forEach(criteria => {
+                const card = createCriteriaCard(criteria);
+                container.appendChild(card);
+            });
+        }
+        
+        // Create individual criteria card
+        function createCriteriaCard(criteria) {
+            const card = document.createElement('div');
+            card.className = 'card criteria-card';
+            card.innerHTML = `
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="card-title mb-0">${criteria.name}</h5>
+                        <span class="criteria-type">${criteria.type.replace('_', ' ')}</span>
+                    </div>
+                    
+                    <p class="criteria-description">${criteria.description}</p>
+                    
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <input type="range" 
+                                   class="weight-slider" 
+                                   min="0" 
+                                   max="100" 
+                                   value="${getCurrentWeight(criteria.name)}"
+                                   data-criteria-id="${criteria.id}"
+                                   data-criteria-name="${criteria.name}">
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <span class="weight-display" id="weight-${criteria.id}">
+                                ${getCurrentWeight(criteria.name)}%
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Range: ${criteria.minValue} - ${criteria.maxValue} ${criteria.unit}
+                            </small>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <small class="text-muted">
+                                <i class="fas fa-arrow-${criteria.isBenefitCriteria ? 'up' : 'down'} me-1"></i>
+                                ${criteria.isBenefitCriteria ? 'Higher is better' : 'Lower is better'}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        // Get current weight for a criteria
+        function getCurrentWeight(criteriaName) {
+            return Math.round((currentWeights[criteriaName] || 0) * 100);
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Weight slider changes
+            document.addEventListener('input', function(e) {
+                if (e.target.classList.contains('weight-slider')) {
+                    const criteriaId = e.target.dataset.criteriaId;
+                    const criteriaName = e.target.dataset.criteriaName;
+                    const weight = parseInt(e.target.value);
+                    
+                    // Update display
+                    document.getElementById(`weight-${criteriaId}`).textContent = weight + '%';
+                    
+                    // Update current weights
+                    currentWeights[criteriaName] = weight / 100;
+                    
+                    // Update total weight
+                    updateTotalWeight();
+                }
+            });
+            
+            // Save preferences
+            document.getElementById('savePreferences').addEventListener('click', savePreferences);
+            
+            // Reset to defaults
+            document.getElementById('resetToDefaults').addEventListener('click', resetToDefaults);
+
+            // Preset buttons
+            document.querySelectorAll('[data-preset]').forEach(btn => {
+                btn.addEventListener('click', () => applyPreset(btn.getAttribute('data-preset')));
+            });
+        }
+        
+        // Update total weight display
+        function updateTotalWeight() {
+            const total = Object.values(currentWeights).reduce((sum, weight) => sum + weight, 0);
+            const totalElement = document.getElementById('totalWeight');
+            const totalContainer = totalElement.parentElement.parentElement;
+            
+            totalElement.textContent = Math.round(total * 100) + '%';
+            
+            // Update color based on total
+            totalContainer.className = 'total-weight';
+            if (Math.abs(total - 1.0) < 0.01) {
+                totalContainer.classList.add('success');
+            } else if (Math.abs(total - 1.0) < 0.1) {
+                totalContainer.classList.add('warning');
+            } else {
+                totalContainer.classList.add('danger');
+            }
+        }
+        
+        // Save user preferences
+        async function savePreferences() {
+            let total = Object.values(currentWeights).reduce((sum, weight) => sum + weight, 0);
+            
+            if (total <= 0) {
+                showError('Please set at least one criterion weight above 0%.');
+                return;
+            }
+            
+            // Auto-normalize to 100% if needed
+            if (Math.abs(total - 1.0) > 0.01) {
+                const factor = 1.0 / total;
+                Object.keys(currentWeights).forEach(key => {
+                    currentWeights[key] = (currentWeights[key] || 0) * factor;
+                });
+                
+                // Reflect normalized values in the UI sliders and badges
+                criteriaData.forEach(criteria => {
+                    const normalized = Math.round((currentWeights[criteria.name] || 0) * 100);
+                    const slider = document.querySelector(`[data-criteria-id="${criteria.id}"]`);
+                    if (slider) slider.value = normalized;
+                    const weightDisplay = document.getElementById(`weight-${criteria.id}`);
+                    if (weightDisplay) weightDisplay.textContent = normalized + '%';
+                });
+                
+                updateTotalWeight();
+            }
+            
+            try {
+                // Convert to the format expected by the API
+                const criteriaWeights = {};
+                criteriaData.forEach(criteria => {
+                    if (currentWeights[criteria.name]) {
+                        criteriaWeights[criteria.id] = currentWeights[criteria.name];
+                    }
+                });
+                
+                const response = await fetch('/api/criteria/preferences', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(criteriaWeights)
+                });
+                
+                if (response.ok) {
+                    showSuccess('Your criteria preferences have been saved. We auto-balanced totals to 100%.');
+                } else {
+                    const error = await response.json();
+                    showError(error.error || 'Failed to save preferences');
+                }
+            } catch (error) {
+                console.error('Error saving preferences:', error);
+                showError('Failed to save preferences. Please try again.');
+            }
+        }
+
+         // Apply preset profiles
+         function applyPreset(key) {
+             // Define preset weights by criteria name (must sum to 1)
+             const presets = {
+                 beginner: {
+                     'Content Quality': 0.25,
+                     'Instructor Rating': 0.20,
+                     'Course Structure': 0.20,
+                     'Practical Exercises': 0.15,
+                     'Support Quality': 0.15,
+                     'Value for Money': 0.05
+                 },
+                 budget: {
+                     'Value for Money': 0.40,
+                     'Content Quality': 0.20,
+                     'Instructor Rating': 0.15,
+                     'Course Structure': 0.10,
+                     'Practical Exercises': 0.10,
+                     'Support Quality': 0.05
+                 },
+                 fast: {
+                     'Course Structure': 0.30,
+                     'Practical Exercises': 0.25,
+                     'Content Quality': 0.20,
+                     'Instructor Rating': 0.15,
+                     'Support Quality': 0.05,
+                     'Value for Money': 0.05
+                 },
+                 switch: {
+                     'Content Quality': 0.25,
+                     'Practical Exercises': 0.25,
+                     'Instructor Rating': 0.20,
+                     'Support Quality': 0.15,
+                     'Course Structure': 0.10,
+                     'Value for Money': 0.05
+                 }
+             };
+
+             const preset = presets[key];
+             if (!preset) return;
+
+             // Reset all to zero first
+             Object.keys(currentWeights).forEach(k => currentWeights[k] = 0);
+
+             // Apply preset
+             Object.entries(preset).forEach(([name, weight]) => {
+                 currentWeights[name] = weight;
+             });
+
+             // Update sliders and displays
+             criteriaData.forEach(criteria => {
+                 const val = Math.round((currentWeights[criteria.name] || 0) * 100);
+                 const slider = document.querySelector(`[data-criteria-id="${criteria.id}"]`);
+                 if (slider) slider.value = val;
+                 const weightDisplay = document.getElementById(`weight-${criteria.id}`);
+                 if (weightDisplay) weightDisplay.textContent = val + '%';
+             });
+
+             updateTotalWeight();
+             showSuccess('Preset applied');
+         }
+        
+        // Reset to default weights
+        function resetToDefaults() {
+            if (confirm('Are you sure you want to reset to default criteria weights?')) {
+                criteriaData.forEach(criteria => {
+                    currentWeights[criteria.name] = criteria.defaultWeight;
+                    
+                    // Update slider
+                    const slider = document.querySelector(`[data-criteria-id="${criteria.id}"]`);
+                    if (slider) {
+                        slider.value = Math.round(criteria.defaultWeight * 100);
+                    }
+                    
+                    // Update display
+                    const weightDisplay = document.getElementById(`weight-${criteria.id}`);
+                    if (weightDisplay) {
+                        weightDisplay.textContent = Math.round(criteria.defaultWeight * 100) + '%';
+                    }
+                });
+                
+                updateTotalWeight();
+                showSuccess('Reset to default criteria weights');
+            }
+        }
+        
+        // Show success message
+        function showSuccess(message) {
+            // Simple alert for now - you could use a toast library
+            alert('Success: ' + message);
+        }
+        
+        // Show error message
+        function showError(message) {
+            // Simple alert for now - you could use a toast library
+            alert('Error: ' + message);
+        }
+    </script>
+</body>
+</html>

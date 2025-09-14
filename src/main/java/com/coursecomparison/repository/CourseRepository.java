@@ -46,5 +46,44 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
             @Param("topic") String topic,
             Pageable pageable);
 
+    @Query("SELECT c FROM Course c WHERE " +
+           "(:minPrice IS NULL OR c.price >= :minPrice) AND " +
+           "(:maxPrice IS NULL OR c.price <= :maxPrice) AND " +
+           "(:minRating IS NULL OR c.rating >= :minRating) AND " +
+           "(:platform IS NULL OR LOWER(c.platform) = LOWER(:platform)) AND " +
+           "(:topic IS NULL OR LOWER(c.topic) LIKE LOWER(CONCAT('%', :topic, '%'))) AND " +
+           "(:difficulty IS NULL OR c.difficultyLevel = :difficulty) AND " +
+           "(:language IS NULL OR c.language = :language) AND " +
+           "(:hasCertificate IS NULL OR c.hasCertificate = :hasCertificate)")
+    List<Course> findCoursesByAdvancedFilters(
+            @Param("minPrice") Double minPrice,
+            @Param("maxPrice") Double maxPrice,
+            @Param("minRating") Double minRating,
+            @Param("platform") String platform,
+            @Param("topic") String topic,
+            @Param("difficulty") String difficulty,
+            @Param("language") String language,
+            @Param("hasCertificate") Boolean hasCertificate);
+
     Optional<Course> findByTitleAndPlatform(String title, String platform);
+    
+    // Additional query methods for enhanced functionality
+    List<Course> findByDifficultyLevel(String difficultyLevel);
+    List<Course> findByLanguage(String language);
+    List<Course> findByHasCertificate(Boolean hasCertificate);
+    
+    @Query("SELECT DISTINCT c.platform FROM Course c ORDER BY c.platform")
+    List<String> findAllPlatforms();
+    
+    @Query("SELECT DISTINCT c.difficultyLevel FROM Course c WHERE c.difficultyLevel IS NOT NULL ORDER BY c.difficultyLevel")
+    List<String> findAllDifficultyLevels();
+    
+    @Query("SELECT DISTINCT c.language FROM Course c WHERE c.language IS NOT NULL ORDER BY c.language")
+    List<String> findAllLanguages();
+    
+    // Additional methods for scheduled updates
+    List<Course> findByLastUpdatedBefore(java.time.LocalDateTime dateTime);
+    List<Course> findByLastUpdatedBeforeAndIsActiveTrue(java.time.LocalDateTime dateTime);
+    List<Course> findTop50ByOrderByStudentCountDesc();
+    List<Course> findByIsActiveTrue();
 } 

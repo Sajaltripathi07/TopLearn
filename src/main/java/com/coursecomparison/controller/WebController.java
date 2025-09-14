@@ -4,6 +4,7 @@ import com.coursecomparison.model.Course;
 import com.coursecomparison.repository.CourseRepository;
 import com.coursecomparison.service.MCDMService;
 import com.coursecomparison.service.CourseService;
+import com.coursecomparison.service.CourseValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -37,6 +38,9 @@ public class WebController {
     @Autowired
     private CourseService courseService;
 
+    @Autowired
+    private CourseValidationService courseValidationService;
+
     @GetMapping("/")
     public String home(Model model) {
         logger.info("Loading home page");
@@ -55,7 +59,7 @@ public class WebController {
             return "redirect:/";
         }
         
-        List<Course> courses = courseService.searchCourses(keyword);
+        List<Course> courses = courseService.searchCourses(keyword,null);
         logger.info("Found {} courses for keyword: {}", courses.size(), keyword);
         
         model.addAttribute("courses", courses);
@@ -67,7 +71,7 @@ public class WebController {
     @GetMapping("/platform/{platform}")
     public String platformCourses(@PathVariable String platform, Model model) {
         logger.info("Loading courses for platform: {}", platform);
-        List<Course> courses = courseService.getCoursesByPlatform(platform);
+        List<Course> courses = courseService.getCoursesByPlatform(platform,null);
         model.addAttribute("courses", courses);
         model.addAttribute("searchTerm", platform);
         model.addAttribute("topics", TOPICS);
@@ -82,6 +86,11 @@ public class WebController {
             Optional<Course> courseOptional = courseService.getCourseById(id);
             if (courseOptional.isPresent()) {
                 Course course = courseOptional.get();
+                // If the course has a valid external URL, redirect to the platform directly
+                if (course.getUrl() != null && course.getUrl().startsWith("http") &&
+                        courseValidationService.validateCourseUrl(course)) {
+                    return "redirect:" + course.getUrl();
+                }
                 model.addAttribute("course", course);
                 return "course-details";
             } else {
@@ -92,5 +101,23 @@ public class WebController {
             logger.error("Error viewing course details: {}", e.getMessage());
             return "redirect:/";
         }
+    }
+    
+    @GetMapping("/criteria")
+    public String customizeCriteria(Model model) {
+        logger.info("Loading criteria customization page");
+        return "criteria-customization";
+    }
+
+    @GetMapping("/compare")
+    public String comparePage(Model model) {
+        logger.info("Loading compare page");
+        return "compare";
+    }
+    
+    @GetMapping("/api-docs")
+    public String apiDocs(Model model) {
+        logger.info("Loading API documentation page");
+        return "api-docs";
     }
 } 

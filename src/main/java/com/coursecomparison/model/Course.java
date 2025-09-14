@@ -6,10 +6,26 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Max;
 import org.hibernate.validator.constraints.URL;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 @Entity
-@Table(name = "courses")
+@Table(name = "courses", indexes = {
+    @Index(name = "idx_course_platform", columnList = "platform"),
+    @Index(name = "idx_course_topic", columnList = "topic"),
+    @Index(name = "idx_course_rating", columnList = "rating"),
+    @Index(name = "idx_course_price", columnList = "price"),
+    @Index(name = "idx_course_student_count", columnList = "studentCount"),
+    @Index(name = "idx_course_difficulty", columnList = "difficultyLevel"),
+    @Index(name = "idx_course_language", columnList = "language"),
+    @Index(name = "idx_course_active", columnList = "isActive"),
+    @Index(name = "idx_course_last_updated", columnList = "lastUpdated"),
+    @Index(name = "idx_course_mcdm_score", columnList = "mcdmScore"),
+    @Index(name = "idx_course_platform_rating", columnList = "platform, rating"),
+    @Index(name = "idx_course_topic_rating", columnList = "topic, rating"),
+    @Index(name = "idx_course_search", columnList = "title, description, topic")
+})
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,6 +66,15 @@ public class Course {
     @URL(message = "Invalid URL format")
     private String url;
     
+    // New enhanced fields
+    private String difficultyLevel; // Beginner, Intermediate, Advanced
+    private String language = "English";
+    private Boolean hasCertificate = false;
+    private String instructorCredentials;
+    private String courseImageUrl;
+    private LocalDateTime lastUpdated;
+    private Boolean isActive = true;
+    
     // MCDM specific fields with validation
     @NotNull(message = "Content quality is required")
     @Min(value = 0, message = "Content quality must be at least 0")
@@ -58,7 +83,7 @@ public class Course {
 
     @NotNull(message = "Instructor rating is required")
     @Min(value = 0, message = "Instructor rating must be at least 0")
-    @Max(value = 1, message = "Instructor rating must be at most 1")
+    @Max(value = 1, message = "Instructor rating must be at least 0")
     private Double instructorRating;
 
     @NotNull(message = "Value for money is required")
@@ -87,6 +112,11 @@ public class Course {
     
     @Transient
     private Map<String, Double> criteriaScores;
+
+    // Constructors
+    public Course() {
+        this.lastUpdated = LocalDateTime.now();
+    }
 
     // Getters and Setters
     public Long getId() {
@@ -177,6 +207,62 @@ public class Course {
         this.url = url;
     }
 
+    public String getDifficultyLevel() {
+        return difficultyLevel;
+    }
+
+    public void setDifficultyLevel(String difficultyLevel) {
+        this.difficultyLevel = difficultyLevel;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public Boolean getHasCertificate() {
+        return hasCertificate;
+    }
+
+    public void setHasCertificate(Boolean hasCertificate) {
+        this.hasCertificate = hasCertificate;
+    }
+
+    public String getInstructorCredentials() {
+        return instructorCredentials;
+    }
+
+    public void setInstructorCredentials(String instructorCredentials) {
+        this.instructorCredentials = instructorCredentials;
+    }
+
+    public String getCourseImageUrl() {
+        return courseImageUrl;
+    }
+
+    public void setCourseImageUrl(String courseImageUrl) {
+        this.courseImageUrl = courseImageUrl;
+    }
+
+    public LocalDateTime getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(LocalDateTime lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
     public Double getContentQuality() {
         return contentQuality;
     }
@@ -233,6 +319,14 @@ public class Course {
         this.mcdmScore = mcdmScore;
     }
 
+    public Map<String, Double> getCriteriaScores() {
+        return criteriaScores;
+    }
+
+    public void setCriteriaScores(Map<String, Double> criteriaScores) {
+        this.criteriaScores = criteriaScores;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -258,6 +352,9 @@ public class Course {
                 ", price=" + price +
                 ", durationHours=" + durationHours +
                 ", studentCount=" + studentCount +
+                ", difficultyLevel='" + difficultyLevel + '\'' +
+                ", language='" + language + '\'' +
+                ", hasCertificate=" + hasCertificate +
                 ", contentQuality=" + contentQuality +
                 ", instructorRating=" + instructorRating +
                 ", valueForMoney=" + valueForMoney +

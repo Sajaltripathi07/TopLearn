@@ -4,516 +4,276 @@
     <title>Search Results - Course Comparison</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #4361ee;
-            --secondary-color: #3f37c9;
-            --accent-color: #4cc9f0;
-            --success-color: #2ecc71;
-            --warning-color: #f1c40f;
-            --danger-color: #e74c3c;
-            --light-color: #f8f9fa;
-            --dark-color: #212529;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7fa;
-            color: var(--dark-color);
-        }
-        
-        .navbar {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .page-header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 60px 0;
-            margin-bottom: 40px;
-            border-radius: 0 0 30px 30px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-        
-        .card {
-            border: none;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            margin-bottom: 30px;
-            height: 100%;
-            background: white;
-        }
-        
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-        }
-        
-        .card-body {
-            padding: 25px;
-        }
-        
-        .card-title {
-            font-weight: 700;
-            margin-bottom: 15px;
-            color: var(--primary-color);
-            font-size: 1.2rem;
-            line-height: 1.4;
-        }
-        
-        .card-text {
-            color: #6c757d;
-            margin-bottom: 20px;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-        
-        .platform-logo {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-            margin-right: 10px;
-        }
-        
-        .platform-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 8px 15px;
-            border-radius: 20px;
-            background-color: rgba(67, 97, 238, 0.1);
-            color: var(--primary-color);
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-        
-        .rating-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 6px 12px;
-            border-radius: 15px;
-            background-color: rgba(241, 196, 15, 0.1);
-            color: var(--warning-color);
-            font-weight: 600;
-        }
-        
-        .rating-badge i {
-            margin-right: 5px;
-        }
-        
-        .price-tag {
-            display: inline-flex;
-            align-items: center;
-            padding: 8px 15px;
-            border-radius: 20px;
-            background-color: rgba(46, 204, 113, 0.1);
-            color: var(--success-color);
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-        
-        .student-count {
-            display: inline-flex;
-            align-items: center;
-            color: #6c757d;
-            font-size: 0.9rem;
-        }
-        
-        .student-count i {
-            margin-right: 5px;
-            color: var(--primary-color);
-        }
-        
-        .instructor-info {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        
-        .instructor-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-            object-fit: cover;
-        }
-        
-        .instructor-name {
-            font-weight: 600;
-            color: var(--dark-color);
-            margin-bottom: 0;
-        }
-        
-        .btn-view-course {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border: none;
-            border-radius: 25px;
-            padding: 10px 25px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            width: 100%;
-            text-align: center;
-        }
-        
-        .btn-view-course:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
-        }
-        
-        .course-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .course-stats {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .search-badge {
-            background-color: rgba(255, 255, 255, 0.2);
-            padding: 8px 20px;
-            border-radius: 25px;
-            font-weight: 500;
-        }
-        
-        .filters {
-            background-color: white;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
-        }
-        
-        .filter-title {
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: var(--primary-color);
-            font-size: 1.1rem;
-        }
-        
-        .filter-option {
-            margin-bottom: 15px;
-        }
-        
-        .filter-option label {
-            font-weight: 500;
-            margin-left: 10px;
-            cursor: pointer;
-        }
-        
-        .filter-option input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-        
-        .btn-apply-filters {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border: none;
-            border-radius: 25px;
-            padding: 12px 25px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            width: 100%;
-            margin-top: 20px;
-        }
-        
-        .btn-apply-filters:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
-        }
-        
-        .no-results {
-            text-align: center;
-            padding: 50px 20px;
-            background-color: white;
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-        }
-        
-        .no-results i {
-            font-size: 3rem;
-            color: var(--warning-color);
-            margin-bottom: 20px;
-        }
-        
-        footer {
-            background-color: var(--dark-color);
-            color: white;
-            padding: 50px 0;
-            margin-top: 50px;
-        }
-    </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg,#6366f1,#4f46e5);">
         <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-graduation-cap me-2"></i>Course Comparison
-            </a>
+            <a class="navbar-brand" href="/"><i class="fas fa-graduation-cap me-2"></i>Course Comparison</a>
+            <form th:action="@{/search}" method="get" class="d-flex ms-auto" role="search">
+                <input class="form-control form-control-sm me-2" type="search" name="keyword" th:value="${searchTerm}" placeholder="Search…" autocomplete="off">
+                <button class="btn btn-light btn-sm" type="submit"><i class="fas fa-search"></i></button>
+            </form>
         </div>
     </nav>
-    
-    <!-- Page Header -->
-    <header class="page-header">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h1 class="mb-4">Search Results</h1>
-                    <div th:if="${keyword != null}" class="d-flex align-items-center">
-                        <span class="me-3 text-white-50">Showing results for:</span>
-                        <span class="search-badge">
-                            <i class="fas fa-search me-2"></i><span th:text="${keyword}"></span>
-                        </span>
-                    </div>
-                </div>
-                <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                    <a href="/" class="btn btn-outline-light">
-                        <i class="fas fa-arrow-left me-2"></i>Back to Home
-                    </a>
-                </div>
-            </div>
-        </div>
-    </header>
-    
-    <!-- Main Content -->
-    <div class="container">
-        <div class="row">
+
+    <div class="container my-4">
+        <div class="row g-4">
             <!-- Filters Sidebar -->
             <div class="col-lg-3">
-                <div class="filters">
-                    <h5 class="filter-title"><i class="fas fa-filter me-2"></i>Filters</h5>
-                    
-                    <div class="mb-4">
-                        <h6 class="filter-title">Platform</h6>
-                        <div class="filter-option">
-                            <input type="checkbox" class="form-check-input" id="platform-udemy" name="platform" value="Udemy">
-                            <label for="platform-udemy">Udemy</label>
-                        </div>
-                        <div class="filter-option">
-                            <input type="checkbox" class="form-check-input" id="platform-coursera" name="platform" value="Coursera">
-                            <label for="platform-coursera">Coursera</label>
-                        </div>
-                        <div class="filter-option">
-                            <input type="checkbox" class="form-check-input" id="platform-edx" name="platform" value="edX">
-                            <label for="platform-edx">edX</label>
-                        </div>
+                <div class="card mb-3">
+                    <div class="card-header bg-primary text-white">
+                        <strong><i class="fas fa-sliders-h me-2"></i>Filters</strong>
                     </div>
-                    
-                    <div class="mb-4">
-                        <h6 class="filter-title">Price Range</h6>
-                        <div class="filter-option">
-                            <input type="checkbox" class="form-check-input" id="price-free" name="price" value="free">
-                            <label for="price-free">Free</label>
-                        </div>
-                        <div class="filter-option">
-                            <input type="checkbox" class="form-check-input" id="price-paid" name="price" value="paid">
-                            <label for="price-paid">Paid</label>
-                        </div>
+                    <div class="card-body">
+                        <form id="filtersForm" class="filters-form">
+                            <input type="hidden" name="keyword" th:value="${searchTerm}">
+
+                            <div class="mb-3">
+                                <label class="form-label">Price (max)</label>
+                                <input type="range" min="0" max="500" step="5" class="form-range" id="priceRange" name="maxPrice">
+                                <div class="d-flex justify-content-between small text-muted">
+                                    <span>Free</span><span id="priceValue">Any</span>
+                                </div>
+                                <input type="hidden" name="maxPrice" id="maxPrice">
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" id="isFree" name="isFree">
+                                    <label class="form-check-label" for="isFree">Free only</label>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Platform</label>
+                                <select class="form-select" name="platform">
+                                    <option value="">Any</option>
+                                    <option value="Udemy">Udemy</option>
+                                    <option value="Coursera">Coursera</option>
+                                    <option value="edX">edX</option>
+                                    <option value="Udacity">Udacity</option>
+                                    <option value="FutureLearn">FutureLearn</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Min Rating</label>
+                                <select class="form-select" name="minRating">
+                                    <option value="">Any</option>
+                                    <option value="4.5">4.5+ Stars</option>
+                                    <option value="4.0">4.0+ Stars</option>
+                                    <option value="3.5">3.5+ Stars</option>
+                                    <option value="3.0">3.0+ Stars</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Difficulty</label>
+                                <select class="form-select" name="difficulty">
+                                    <option value="">Any</option>
+                                    <option value="Beginner">Beginner</option>
+                                    <option value="Intermediate">Intermediate</option>
+                                    <option value="Advanced">Advanced</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Language</label>
+                                <select class="form-select" name="language">
+                                    <option value="">Any</option>
+                                    <option value="English">English</option>
+                                    <option value="Hindi">Hindi</option>
+                                    <option value="Spanish">Spanish</option>
+                                    <option value="French">French</option>
+                                    <option value="German">German</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="hasCertificate" name="hasCertificate" value="true">
+                                    <label class="form-check-label" for="hasCertificate">
+                                        Certificate available
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="button" id="applyFilters" class="btn btn-primary"><i class="fas fa-filter me-2"></i>Apply Filters</button>
+                                <button type="button" id="clearFilters" class="btn btn-outline-secondary">Clear</button>
+                                <button type="button" id="testFilters" class="btn btn-outline-info btn-sm">Test Filters</button>
+                            </div>
+                        </form>
                     </div>
-                    
-                    <div class="mb-4">
-                        <h6 class="filter-title">Rating</h6>
-                        <div class="filter-option">
-                            <input type="checkbox" class="form-check-input" id="rating-4" name="rating" value="4">
-                            <label for="rating-4">4+ Stars</label>
-                        </div>
-                        <div class="filter-option">
-                            <input type="checkbox" class="form-check-input" id="rating-3" name="rating" value="3">
-                            <label for="rating-3">3+ Stars</label>
-                        </div>
-                    </div>
-                    
-                    <button class="btn btn-apply-filters">Apply Filters</button>
                 </div>
+
+                <!-- Active filter chips -->
+                <div id="activeChips" class="d-flex flex-wrap gap-2"></div>
             </div>
-            
+
             <!-- Results -->
             <div class="col-lg-9">
-                <div th:if="${courses.empty}" class="no-results">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <h4 class="mt-3">No courses found</h4>
-                    <p class="text-muted">Try adjusting your search criteria or filters</p>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">Results for "<span th:text="${searchTerm}"></span>"</h5>
+                    <a href="/" class="btn btn-light btn-sm">New Search</a>
                 </div>
-                
+
                 <div class="row">
-                    <div th:each="course : ${courses}" class="col-md-6 mb-4">
-                        <div class="card course-card">
+                    <div th:each="course : ${courses}" class="col-md-6 col-xl-4 mb-4">
+                        <div class="card h-100">
                             <div class="card-body">
-                                <div class="d-flex align-items-center mb-3">
-                                    <span class="platform-icon">
-                                        <i th:if="${course.platform == 'Udemy'}" class="fab fa-udemy"></i>
-                                        <i th:if="${course.platform == 'Coursera'}" class="fas fa-graduation-cap"></i>
-                                        <i th:if="${course.platform == 'edX'}" class="fas fa-university"></i>
-                                        <i th:if="${course.platform != 'Udemy' && course.platform != 'Coursera' && course.platform != 'edX'}" class="fas fa-globe"></i>
-                                    </span>
-                                    <span class="platform-badge platform" th:text="${course.platform}"></span>
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="badge bg-primary" th:text="${course.platform}"></span>
+                                    <span th:if="${course.difficultyLevel}" class="badge bg-success" th:text="${course.difficultyLevel}"></span>
                                 </div>
-                                
-                                <h5 class="card-title" th:text="${course.title}">Course Title</h5>
-                                <p class="card-text" th:text="${#strings.abbreviate(course.description, 150)}">Course description</p>
-                                
-                                <div class="instructor-info">
-                                    <span class="instructor-avatar">
-                                        <i class="fas fa-user-circle"></i>
-                                    </span>
-                                    <div>
-                                        <p class="instructor-name" th:text="${course.instructor}">Instructor Name</p>
-                                    </div>
+                                <h6 class="mb-1" th:text="${course.title}"></h6>
+                                <div class="small text-muted mb-2" th:text="${course.instructor}"></div>
+                                <div class="small mb-3" th:text="${course.description}"></div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-warning"><i class="fas fa-star me-1"></i><span th:text="${course.rating}"></span></span>
+                                    <span class="text-muted" th:text="${course.studentCount} + ' students'"></span>
+                                    <span class="badge bg-secondary" th:if="${course.price != null}" th:text="${course.price} == 0 ? 'Free' : '$' + ${#numbers.formatDecimal(course.price,1,2)}"></span>
                                 </div>
-                                
-                                <div class="course-meta">
-                                    <div class="rating-badge">
-                                        <i class="fas fa-star"></i>
-                                        <span class="rating" th:text="${course.rating}">4.5</span>
-                                    </div>
-                                    <div class="price-tag price" th:text="${course.price == 0 ? 'Free' : '$' + course.price}">$99.99</div>
+                                <div class="mt-3 d-grid gap-2">
+                                    <a th:href="${course.url}" target="_blank" class="btn btn-primary btn-sm">View</a>
+                                    <a th:href="@{'/course/' + ${course.id}}" class="btn btn-outline-primary btn-sm">Details</a>
                                 </div>
-                                
-                                <div class="course-stats">
-                                    <div class="student-count">
-                                        <i class="fas fa-users"></i>
-                                        <span th:text="${course.studentCount}">1000</span> students
-                                    </div>
-                                    <div class="student-count">
-                                        <i class="fas fa-clock"></i>
-                                        <span th:text="${course.durationHours}">10</span> hours
-                                    </div>
-                                </div>
-                                
-                                <a th:href="@{/course/{id}(id=${course.id})}" class="btn btn-view-course">
-                                    <i class="fas fa-eye me-2"></i>View Course
-                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                <div class="no-results-message" style="display: none;">
-                    <div class="no-results">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <h4 class="mt-3">No courses found</h4>
-                        <p class="text-muted">Try adjusting your filters</p>
-                    </div>
+
+                <div th:if="${#lists.isEmpty(courses)}" class="text-center py-5">
+                    <i class="fas fa-search text-muted mb-3" style="font-size:3rem;"></i>
+                    <h5>No results</h5>
+                    <p class="text-muted">Try clearing filters or searching a different term.</p>
                 </div>
             </div>
         </div>
     </div>
-    
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5><i class="fas fa-graduation-cap me-2"></i>Course Comparison</h5>
-                    <p>Helping learners make informed decisions by comparing courses from multiple providers.</p>
-                </div>
-                <div class="col-md-3">
-                    <h5>Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="/" class="text-light">Home</a></li>
-                        <li><a href="/search" class="text-light">All Courses</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h5>Contact</h5>
-                    <ul class="list-unstyled">
-                        <li><i class="fas fa-envelope me-2"></i>support@coursecomparison.com</li>
-                    </ul>
-                </div>
-            </div>
-            <hr class="mt-4 mb-4">
-            <div class="text-center">
-                <p>&copy; 2025 Course Comparison. All rights reserved.</p>
-            </div>
+
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2025 Course Comparison Platform. All rights reserved.</p>
         </div>
     </footer>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="/js/main.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Get all filter checkboxes
-            const platformFilters = document.querySelectorAll('input[name="platform"]');
-            const priceFilters = document.querySelectorAll('input[name="price"]');
-            const ratingFilters = document.querySelectorAll('input[name="rating"]');
-            
-            // Get all course cards
-            const courseCards = document.querySelectorAll('.course-card');
-            
-            // Add data attributes to course cards
-            courseCards.forEach(card => {
-                const platform = card.querySelector('.platform').textContent.trim();
-                const price = card.querySelector('.price').textContent.trim().toLowerCase();
-                const rating = parseFloat(card.querySelector('.rating').textContent.trim());
-                
-                card.setAttribute('data-platform', platform);
-                card.setAttribute('data-price', price.includes('free') ? 'free' : 'paid');
-                card.setAttribute('data-rating', rating);
-            });
-            
-            // Function to apply filters
-            function applyFilters() {
-                const selectedPlatforms = Array.from(platformFilters)
-                    .filter(checkbox => checkbox.checked)
-                    .map(checkbox => checkbox.value);
-                
-                const selectedPrices = Array.from(priceFilters)
-                    .filter(checkbox => checkbox.checked)
-                    .map(checkbox => checkbox.value);
-                
-                const selectedRatings = Array.from(ratingFilters)
-                    .filter(checkbox => checkbox.checked)
-                    .map(checkbox => parseFloat(checkbox.value));
-                
-                let visibleCount = 0;
-                
-                courseCards.forEach(card => {
-                    const platform = card.getAttribute('data-platform');
-                    const price = card.getAttribute('data-price');
-                    const rating = parseFloat(card.getAttribute('data-rating'));
-                    
-                    const platformMatch = selectedPlatforms.length === 0 || selectedPlatforms.includes(platform);
-                    const priceMatch = selectedPrices.length === 0 || selectedPrices.includes(price);
-                    const ratingMatch = selectedRatings.length === 0 || selectedRatings.some(minRating => rating >= minRating);
-                    
-                    if (platformMatch && priceMatch && ratingMatch) {
-                        card.closest('.col-md-6').style.display = 'block';
-                        visibleCount++;
-                    } else {
-                        card.closest('.col-md-6').style.display = 'none';
-                    }
-                });
-                
-                // Show/hide no results message
-                const noResultsMessage = document.querySelector('.no-results-message');
-                if (noResultsMessage) {
-                    noResultsMessage.style.display = visibleCount === 0 ? 'block' : 'none';
+        // Initialize filter UI: chips, slider, clear
+        document.addEventListener('DOMContentLoaded', () => {
+            const price = document.getElementById('priceRange');
+            const priceValue = document.getElementById('priceValue');
+            const maxPrice = document.getElementById('maxPrice');
+            const isFree = document.getElementById('isFree');
+            const form = document.getElementById('filtersForm');
+            const chips = document.getElementById('activeChips');
+            const applyFiltersBtn = document.getElementById('applyFilters');
+            const clearFiltersBtn = document.getElementById('clearFilters');
+            const testFiltersBtn = document.getElementById('testFilters');
+
+            function syncPriceLabel() {
+                if (isFree.checked) {
+                    price.disabled = true; 
+                    maxPrice.value = '0'; 
+                    priceValue.textContent = 'Free only';
+                } else {
+                    price.disabled = false; 
+                    maxPrice.value = price.value || ''; 
+                    priceValue.textContent = price.value ? ('$' + price.value) : 'Any';
                 }
             }
             
-            // Add event listeners to all filter checkboxes
-            platformFilters.forEach(checkbox => {
-                checkbox.addEventListener('change', applyFilters);
-            });
+            price.addEventListener('input', syncPriceLabel);
+            isFree.addEventListener('change', syncPriceLabel);
+            syncPriceLabel();
+
+            // Build chips from current form values
+            function buildChips() {
+                const params = new FormData(form);
+                const entries = [];
+                for (let [k, v] of params.entries()) {
+                    if (v && v.trim() !== '') {
+                        entries.push([k, v]);
+                    }
+                }
+                
+                chips.innerHTML = entries.map(([k, v]) => {
+                    const label = k + ': ' + v;
+                    return `<span class="badge bg-light text-dark border">${label} <button type="button" class="btn btn-sm btn-link text-decoration-none ms-1 px-1" data-key="${k}">×</button></span>`;
+                }).join('');
+                
+                chips.querySelectorAll('button[data-key]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const key = btn.getAttribute('data-key');
+                        // clear matching input
+                        const el = form.querySelector(`[name="${key}"]`);
+                        if (el) {
+                            if (el.type === 'checkbox' || el.type === 'radio') {
+                                el.checked = false;
+                            } else {
+                                el.value = '';
+                            }
+                        }
+                        if (key === 'maxPrice') {
+                            price.value = '';
+                            maxPrice.value = '';
+                        }
+                        buildChips();
+                        if (window.App && window.App.applyFilters) {
+                            window.App.applyFilters();
+                        }
+                    });
+                });
+            }
             
-            priceFilters.forEach(checkbox => {
-                checkbox.addEventListener('change', applyFilters);
+            buildChips();
+
+            // Apply filters button
+            if (applyFiltersBtn) {
+                applyFiltersBtn.addEventListener('click', () => {
+                    if (window.App && window.App.applyFilters) {
+                        window.App.applyFilters();
+                    }
+                });
+            }
+
+            // Clear filters button
+            if (clearFiltersBtn) {
+                clearFiltersBtn.addEventListener('click', () => {
+                    form.reset();
+                    price.value = '';
+                    maxPrice.value = '';
+                    buildChips();
+                    if (window.App && window.App.applyFilters) {
+                        window.App.applyFilters();
+                    }
+                });
+            }
+
+            // Test filters button
+            if (testFiltersBtn) {
+                testFiltersBtn.addEventListener('click', () => {
+                    console.log('Testing filters...');
+                    console.log('Form element:', form);
+                    console.log('App object:', window.App);
+                    if (window.App && window.App.applyFilters) {
+                        console.log('Calling applyFilters...');
+                        window.App.applyFilters();
+                    } else {
+                        console.error('App.applyFilters not available');
+                    }
+                });
+            }
+
+            // Auto-apply filters on change
+            form.querySelectorAll('input, select').forEach(input => {
+                input.addEventListener('change', () => {
+                    buildChips();
+                    if (window.App && window.App.applyFilters) {
+                        window.App.applyFilters();
+                    }
+                });
             });
-            
-            ratingFilters.forEach(checkbox => {
-                checkbox.addEventListener('change', applyFilters);
-            });
-            
-            // Initial filter application
-            applyFilters();
         });
     </script>
 </body>

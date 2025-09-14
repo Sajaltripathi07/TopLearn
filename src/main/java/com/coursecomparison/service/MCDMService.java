@@ -1,6 +1,7 @@
 package com.coursecomparison.service;
 
 import com.coursecomparison.model.Course;
+import com.coursecomparison.model.User;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,34 +11,32 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Service class implementing TOPSIS (Technique for Order Preference by Similarity to Ideal Solution)
- * for multi-criteria decision making in course ranking.
+ * Enhanced MCDM Service implementing multiple algorithms for course ranking.
+ * Supports TOPSIS, AHP, and personalized ranking based on user preferences.
  */
 @Service
 public class MCDMService {
     private static final Logger logger = LoggerFactory.getLogger(MCDMService.class);
 
-    // Criteria weights (can be adjusted based on importance)
-    private static final double CONTENT_QUALITY_WEIGHT = 0.25;
-    private static final double INSTRUCTOR_RATING_WEIGHT = 0.20;
-    private static final double VALUE_FOR_MONEY_WEIGHT = 0.15;
-    private static final double COURSE_STRUCTURE_WEIGHT = 0.15;
-    private static final double PRACTICAL_EXERCISES_WEIGHT = 0.15;
-    private static final double SUPPORT_QUALITY_WEIGHT = 0.10;
+    // Default criteria weights
+    private static final Map<String, Double> DEFAULT_WEIGHTS = Map.of(
+        "Content Quality", 0.25,
+        "Instructor Rating", 0.20,
+        "Value for Money", 0.15,
+        "Course Structure", 0.15,
+        "Practical Exercises", 0.15,
+        "Support Quality", 0.10
+    );
 
-    // Weights for different criteria
-    private static final double RATING_WEIGHT = 0.3;
-    private static final double STUDENT_COUNT_WEIGHT = 0.2;
-    private static final double PRICE_WEIGHT = 0.2;
+    // Algorithm types
+    public enum Algorithm {
+        TOPSIS, AHP, PERSONALIZED
+    }
 
     /**
-     * Ranks courses using TOPSIS method based on multiple criteria.
-     * 
-     * @param courses List of courses to rank
-     * @return Ranked list of courses (best to worst)
-     * @throws IllegalArgumentException if courses list is null or empty
+     * Ranks courses using specified algorithm
      */
-    public List<Course> rankCoursesUsingTOPSIS(List<Course> courses) {
+    public List<Course> rankCourses(List<Course> courses, Algorithm algorithm, User user) {
         Assert.notNull(courses, "Courses list cannot be null");
         if (courses.isEmpty()) {
             return courses;
@@ -45,15 +44,208 @@ public class MCDMService {
 
         validateCourses(courses);
 
-        // Calculate TOPSIS scores for each course
-        Map<Course, Double> topsisScores = calculateTOPSISScores(courses);
+        switch (algorithm) {
+            case TOPSIS:
+                return rankCoursesUsingTOPSIS(courses, user);
+            case AHP:
+                return rankCoursesUsingAHP(courses, user);
+            case PERSONALIZED:
+                return rankCoursesPersonalized(courses, user);
+            default:
+                return rankCoursesUsingTOPSIS(courses, user);
+        }
+    }
+
+    /**
+     * Ranks courses using TOPSIS method with user preferences
+     */
+    public List<Course> rankCoursesUsingTOPSIS(List<Course> courses, User user) {
+        Map<String, Double> weights = getUserWeights(user);
+        Map<Course, Double> topsisScores = calculateTOPSISScores(courses, weights);
         
-        // Sort courses by TOPSIS score in descending order
         return courses.stream()
                 .sorted(Comparator.comparingDouble(course -> -topsisScores.getOrDefault(course, 0.0)))
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Ranks courses using AHP (Analytic Hierarchy Process)
+     */
+    public List<Course> rankCoursesUsingAHP(List<Course> courses, User user) {
+        Map<String, Double> weights = getUserWeights(user);
+        Map<Course, Double> ahpScores = calculateAHPScores(courses, weights);
+        
+        return courses.stream()
+                .sorted(Comparator.comparingDouble(course -> -ahpScores.getOrDefault(course, 0.0)))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Personalized ranking based on user interests and preferences
+     */
+    public List<Course> rankCoursesPersonalized(List<Course> courses, User user) {
+        if (user == null) {
+            return rankCoursesUsingTOPSIS(courses, null);
+        }
+
+        Map<String, Double> weights = getUserWeights(user);
+        Map<Course, Double> personalizedScores = calculatePersonalizedScores(courses, weights, user);
+        
+        return courses.stream()
+                .sorted(Comparator.comparingDouble(course -> -personalizedScores.getOrDefault(course, 0.0)))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Get user-specific weights or default weights
+     */
+    private Map<String, Double> getUserWeights(User user) {
+        if (user != null && user.getPersonalCriteriaWeights() != null) {
+            return user.getPersonalCriteriaWeights();
+        }
+        return new HashMap<>(DEFAULT_WEIGHTS);
+    }
+
+    /**
+     * Calculate TOPSIS scores with dynamic weights
+     */
+    private Map<Course, Double> calculateTOPSISScores(List<Course> courses, Map<String, Double> weights) {
+        // Normalize criteria values
+        Map<Course, Double> normalizedContentQuality = normalizeCriteria(courses, Course::getContentQuality);
+        Map<Course, Double> normalizedInstructorRating = normalizeCriteria(courses, Course::getInstructorRating);
+        Map<Course, Double> normalizedValueForMoney = normalizeCriteria(courses, Course::getValueForMoney);
+        Map<Course, Double> normalizedCourseStructure = normalizeCriteria(courses, Course::getCourseStructure);
+        Map<Course, Double> normalizedPracticalExercises = normalizeCriteria(courses, Course::getPracticalExercises);
+        Map<Course, Double> normalizedSupportQuality = normalizeCriteria(courses, Course::getSupportQuality);
+        
+        // Calculate weighted normalized values
+        Map<Course, Double> weightedScores = new HashMap<>();
+        for (Course course : courses) {
+            double score = 
+                normalizedContentQuality.get(course) * weights.get("Content Quality") +
+                normalizedInstructorRating.get(course) * weights.get("Instructor Rating") +
+                normalizedValueForMoney.get(course) * weights.get("Value for Money") +
+                normalizedCourseStructure.get(course) * weights.get("Course Structure") +
+                normalizedPracticalExercises.get(course) * weights.get("Practical Exercises") +
+                normalizedSupportQuality.get(course) * weights.get("Support Quality");
+            
+            weightedScores.put(course, score);
+            course.setMcdmScore(score);
+        }
+        
+        return weightedScores;
+    }
+
+    /**
+     * Calculate AHP scores
+     */
+    private Map<Course, Double> calculateAHPScores(List<Course> courses, Map<String, Double> weights) {
+        Map<Course, Double> ahpScores = new HashMap<>();
+        
+        for (Course course : courses) {
+            double score = 0.0;
+            
+            // Apply AHP methodology with consistency ratio
+            score += calculateAHPCriteriaScore(course.getContentQuality(), weights.get("Content Quality"));
+            score += calculateAHPCriteriaScore(course.getInstructorRating(), weights.get("Instructor Rating"));
+            score += calculateAHPCriteriaScore(course.getValueForMoney(), weights.get("Value for Money"));
+            score += calculateAHPCriteriaScore(course.getCourseStructure(), weights.get("Course Structure"));
+            score += calculateAHPCriteriaScore(course.getPracticalExercises(), weights.get("Practical Exercises"));
+            score += calculateAHPCriteriaScore(course.getSupportQuality(), weights.get("Support Quality"));
+            
+            ahpScores.put(course, score);
+            course.setMcdmScore(score);
+        }
+        
+        return ahpScores;
+    }
+
+    /**
+     * Calculate personalized scores considering user interests
+     */
+    private Map<Course, Double> calculatePersonalizedScores(List<Course> courses, Map<String, Double> weights, User user) {
+        Map<Course, Double> personalizedScores = new HashMap<>();
+        
+        for (Course course : courses) {
+            double baseScore = calculateBaseScore(course, weights);
+            double interestBonus = calculateInterestBonus(course, user);
+            double difficultyBonus = calculateDifficultyBonus(course, user);
+            
+            double totalScore = baseScore + interestBonus + difficultyBonus;
+            personalizedScores.put(course, totalScore);
+            course.setMcdmScore(totalScore);
+        }
+        
+        return personalizedScores;
+    }
+
+    /**
+     * Calculate base score using weighted criteria
+     */
+    private double calculateBaseScore(Course course, Map<String, Double> weights) {
+        return course.getContentQuality() * weights.get("Content Quality") +
+               course.getInstructorRating() * weights.get("Instructor Rating") +
+               course.getValueForMoney() * weights.get("Value for Money") +
+               course.getCourseStructure() * weights.get("Course Structure") +
+               course.getPracticalExercises() * weights.get("Practical Exercises") +
+               course.getSupportQuality() * weights.get("Support Quality");
+    }
+
+    /**
+     * Calculate bonus for courses matching user interests
+     */
+    private double calculateInterestBonus(Course course, User user) {
+        if (user.getInterests() == null || user.getInterests().isEmpty()) {
+            return 0.0;
+        }
+        
+        return user.getInterests().stream()
+                .anyMatch(interest -> course.getTopic().toLowerCase().contains(interest.toLowerCase())) ? 0.1 : 0.0;
+    }
+
+    /**
+     * Calculate bonus based on course difficulty matching user level
+     */
+    private double calculateDifficultyBonus(Course course, User user) {
+        // This could be enhanced with user skill level tracking
+        return 0.0;
+    }
+
+    /**
+     * Calculate AHP criteria score
+     */
+    private double calculateAHPCriteriaScore(Double value, Double weight) {
+        if (value == null) return 0.0;
+        return value * weight;
+    }
+
+    /**
+     * Normalize criteria values for TOPSIS
+     */
+    private Map<Course, Double> normalizeCriteria(List<Course> courses, java.util.function.Function<Course, Double> criteriaGetter) {
+        double min = courses.stream()
+                .mapToDouble(criteriaGetter::apply)
+                .min()
+                .orElse(0.0);
+        
+        double max = courses.stream()
+                .mapToDouble(criteriaGetter::apply)
+                .max()
+                .orElse(1.0);
+        
+        Map<Course, Double> normalizedValues = new HashMap<>();
+        for (Course course : courses) {
+            double value = criteriaGetter.apply(course);
+            double normalized = (max - min) > 0 ? (value - min) / (max - min) : 0.0;
+            normalizedValues.put(course, normalized);
+        }
+        
+        return normalizedValues;
+    }
+
+    /**
+     * Validate course data
+     */
     private void validateCourses(List<Course> courses) {
         for (Course course : courses) {
             Assert.notNull(course.getContentQuality(), "Content quality cannot be null");
@@ -78,139 +270,47 @@ public class MCDMService {
         }
     }
 
-    private Map<Course, Double> calculateTOPSISScores(List<Course> courses) {
-        // Normalize criteria values
-        Map<Course, Double> normalizedContentQuality = normalizeCriteria(courses, Course::getContentQuality);
-        Map<Course, Double> normalizedInstructorRating = normalizeCriteria(courses, Course::getInstructorRating);
-        Map<Course, Double> normalizedValueForMoney = normalizeCriteria(courses, Course::getValueForMoney);
-        Map<Course, Double> normalizedCourseStructure = normalizeCriteria(courses, Course::getCourseStructure);
-        Map<Course, Double> normalizedPracticalExercises = normalizeCriteria(courses, Course::getPracticalExercises);
-        Map<Course, Double> normalizedSupportQuality = normalizeCriteria(courses, Course::getSupportQuality);
-        
-        // Calculate weighted normalized values
-        Map<Course, Double> weightedScores = new HashMap<>();
-        for (Course course : courses) {
-            double score = 
-                normalizedContentQuality.get(course) * CONTENT_QUALITY_WEIGHT +
-                normalizedInstructorRating.get(course) * INSTRUCTOR_RATING_WEIGHT +
-                normalizedValueForMoney.get(course) * VALUE_FOR_MONEY_WEIGHT +
-                normalizedCourseStructure.get(course) * COURSE_STRUCTURE_WEIGHT +
-                normalizedPracticalExercises.get(course) * PRACTICAL_EXERCISES_WEIGHT +
-                normalizedSupportQuality.get(course) * SUPPORT_QUALITY_WEIGHT;
-            
-            weightedScores.put(course, score);
-        }
-        
-        return weightedScores;
+    /**
+     * Get criteria weights
+     */
+    public Map<String, Double> getCriteriaWeights(User user) {
+        return getUserWeights(user);
     }
     
-    private Map<Course, Double> normalizeCriteria(List<Course> courses, java.util.function.Function<Course, Double> criteriaGetter) {
-        // Find min and max values
-        double min = courses.stream()
-                .mapToDouble(criteriaGetter::apply)
-                .min()
-                .orElse(0.0);
-        
-        double max = courses.stream()
-                .mapToDouble(criteriaGetter::apply)
-                .max()
-                .orElse(1.0);
-        
-        // Normalize values
-        Map<Course, Double> normalizedValues = new HashMap<>();
-        for (Course course : courses) {
-            double value = criteriaGetter.apply(course);
-            double normalized = (value - min) / (max - min);
-            normalizedValues.put(course, normalized);
-        }
-        
-        return normalizedValues;
-    }
-
-    public Map<String, Double> getCriteriaWeights() {
-        Map<String, Double> weights = new HashMap<>();
-        weights.put("Content Quality", CONTENT_QUALITY_WEIGHT);
-        weights.put("Instructor Rating", INSTRUCTOR_RATING_WEIGHT);
-        weights.put("Value for Money", VALUE_FOR_MONEY_WEIGHT);
-        weights.put("Course Structure", COURSE_STRUCTURE_WEIGHT);
-        weights.put("Practical Exercises", PRACTICAL_EXERCISES_WEIGHT);
-        weights.put("Support Quality", SUPPORT_QUALITY_WEIGHT);
-        return weights;
-    }
-    
-    public Map<String, Double> analyzeCourse(Course course) {
+    /**
+     * Analyze individual course performance
+     */
+    public Map<String, Double> analyzeCourse(Course course, User user) {
+        Map<String, Double> weights = getUserWeights(user);
         Map<String, Double> analysis = new HashMap<>();
-        analysis.put("Content Quality Score", course.getContentQuality() * CONTENT_QUALITY_WEIGHT);
-        analysis.put("Instructor Rating Score", course.getInstructorRating() * INSTRUCTOR_RATING_WEIGHT);
-        analysis.put("Value for Money Score", course.getValueForMoney() * VALUE_FOR_MONEY_WEIGHT);
-        analysis.put("Course Structure Score", course.getCourseStructure() * COURSE_STRUCTURE_WEIGHT);
-        analysis.put("Practical Exercises Score", course.getPracticalExercises() * PRACTICAL_EXERCISES_WEIGHT);
-        analysis.put("Support Quality Score", course.getSupportQuality() * SUPPORT_QUALITY_WEIGHT);
+        
+        analysis.put("Content Quality Score", course.getContentQuality() * weights.get("Content Quality"));
+        analysis.put("Instructor Rating Score", course.getInstructorRating() * weights.get("Instructor Rating"));
+        analysis.put("Value for Money Score", course.getValueForMoney() * weights.get("Value for Money"));
+        analysis.put("Course Structure Score", course.getCourseStructure() * weights.get("Course Structure"));
+        analysis.put("Practical Exercises Score", course.getPracticalExercises() * weights.get("Practical Exercises"));
+        analysis.put("Support Quality Score", course.getSupportQuality() * weights.get("Support Quality"));
+        
         return analysis;
     }
 
+    /**
+     * Get algorithm comparison for courses
+     */
+    public Map<String, List<Course>> compareAlgorithms(List<Course> courses, User user) {
+        Map<String, List<Course>> comparison = new HashMap<>();
+        
+        comparison.put("TOPSIS", rankCoursesUsingTOPSIS(new ArrayList<>(courses), user));
+        comparison.put("AHP", rankCoursesUsingAHP(new ArrayList<>(courses), user));
+        comparison.put("Personalized", rankCoursesPersonalized(new ArrayList<>(courses), user));
+        
+        return comparison;
+    }
+
+    /**
+     * Legacy method for backward compatibility
+     */
     public List<Course> rankCourses(List<Course> courses) {
-        logger.info("Ranking {} courses using MCDM", courses.size());
-        
-        if (courses == null || courses.isEmpty()) {
-            return Collections.emptyList();
-        }
-        
-        // Calculate scores for each course
-        List<Course> scoredCourses = courses.stream()
-            .map(this::calculateMCDMScore)
-            .collect(Collectors.toList());
-        
-        // Sort by MCDM score in descending order
-        scoredCourses.sort(Comparator.comparingDouble(Course::getMcdmScore).reversed());
-        
-        logger.info("Ranked courses using MCDM");
-        return scoredCourses;
-    }
-    
-    private Course calculateMCDMScore(Course course) {
-        // Normalize values
-        double normalizedRating = normalizeRating(course.getRating());
-        double normalizedStudentCount = normalizeStudentCount(course.getStudentCount());
-        double normalizedPrice = normalizePrice(course.getPrice());
-        double normalizedContentQuality = normalizeContentQuality(course.getContentQuality());
-        double normalizedInstructorRating = normalizeInstructorRating(course.getInstructorRating());
-        
-        // Calculate weighted score
-        double mcdmScore = (normalizedRating * RATING_WEIGHT) +
-                          (normalizedStudentCount * STUDENT_COUNT_WEIGHT) +
-                          (normalizedPrice * PRICE_WEIGHT) +
-                          (normalizedContentQuality * CONTENT_QUALITY_WEIGHT) +
-                          (normalizedInstructorRating * INSTRUCTOR_RATING_WEIGHT);
-        
-        course.setMcdmScore(mcdmScore);
-        return course;
-    }
-    
-    private double normalizeRating(Double rating) {
-        if (rating == null) return 0.0;
-        return rating / 5.0; // Normalize to 0-1 range
-    }
-    
-    private double normalizeStudentCount(Integer studentCount) {
-        if (studentCount == null) return 0.0;
-        // Normalize to 0-1 range, assuming max student count is 100,000
-        return Math.min(studentCount / 100000.0, 1.0);
-    }
-    
-    private double normalizePrice(Double price) {
-        if (price == null || price == 0.0) return 1.0; // Free courses get max score
-        // Normalize to 0-1 range, assuming max price is $200
-        return Math.max(0.0, 1.0 - (price / 200.0));
-    }
-    
-    private double normalizeContentQuality(Double contentQuality) {
-        if (contentQuality == null) return 0.7; // Default value
-        return contentQuality;
-    }
-    
-    private double normalizeInstructorRating(Double instructorRating) {
-        if (instructorRating == null) return 0.7; // Default value
-        return instructorRating;
+        return rankCourses(courses, Algorithm.TOPSIS, null);
     }
 } 

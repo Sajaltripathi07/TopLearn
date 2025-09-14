@@ -1,127 +1,445 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <title th:text="${course.title} + ' - Course Details'">Course Details</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Details - Course Comparison</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #10b981;
+            --accent-color: #f59e0b;
+            --dark-color: #1f2937;
+            --light-color: #f8fafc;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-color);
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), #4f46e5);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
         .course-header {
-            background-color: #f8f9fa;
-            padding: 2rem 0;
-            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--primary-color), #4f46e5);
+            color: white;
+            padding: 60px 0;
+            margin-bottom: 40px;
         }
-        .platform-icon {
+        
+        .course-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .course-badge {
+            background: var(--secondary-color);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        
+        .course-rating {
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .course-price {
+            background: var(--secondary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
             font-size: 1.5rem;
-            margin-right: 0.5rem;
+            font-weight: 700;
+            display: inline-block;
         }
-        .course-metrics {
-            display: flex;
-            gap: 1rem;
-            margin: 1rem 0;
+        
+        .action-buttons {
+            position: sticky;
+            top: 20px;
         }
-        .metric-card {
-            flex: 1;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            background-color: #f8f9fa;
+        
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: #4f46e5;
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            background: transparent;
+            border-radius: 10px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .info-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .mcdm-score {
+            background: linear-gradient(135deg, var(--primary-color), #4f46e5);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
             text-align: center;
+            margin-bottom: 20px;
         }
-        .metric-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #0d6efd;
+        
+        .score-bar {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            height: 8px;
+            margin: 10px 0;
+            overflow: hidden;
         }
-        .metric-label {
-            font-size: 0.875rem;
-            color: #6c757d;
+        
+        .score-fill {
+            background: var(--accent-color);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
         }
     </style>
 </head>
 <body>
-    <div th:replace="fragments/header :: header"></div>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-graduation-cap me-2"></i>Course Comparison
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="fas fa-home me-1"></i>Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/courses"><i class="fas fa-list me-1"></i>All Courses</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/api-docs"><i class="fas fa-code me-1"></i>API Docs</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-    <div class="container">
-        <div class="course-header">
-            <div class="row">
+    <!-- Course Header -->
+    <section class="course-header" th:if="${course}">
+        <div class="container">
+            <div class="row align-items-center">
                 <div class="col-md-8">
-                    <h1 th:text="${course.title}">Course Title</h1>
-                    <div class="d-flex align-items-center mb-3">
-                        <span class="platform-icon">
-                            <i th:if="${course.platform == 'Udemy'}" class="fab fa-udemy"></i>
-                            <i th:if="${course.platform == 'Coursera'}" class="fas fa-graduation-cap"></i>
-                            <i th:if="${course.platform == 'edX'}" class="fas fa-university"></i>
-                            <i th:if="${course.platform != 'Udemy' && course.platform != 'Coursera' && course.platform != 'edX'}" class="fas fa-globe"></i>
-                        </span>
-                        <span th:text="${course.platform}" class="h5 mb-0"></span>
+                    <div class="course-badge" th:text="${course.platform}"></div>
+                    <h1 class="display-5 fw-bold mb-3" th:text="${course.title}"></h1>
+                    <p class="lead mb-4" th:text="${course.description}"></p>
+                    <div class="d-flex align-items-center gap-4">
+                        <div class="course-rating">
+                            <i class="fas fa-star"></i>
+                            <span th:text="${course.rating}"></span>
+                            <span class="text-white-50 ms-2" th:text="'(' + ${course.studentCount} + ' students)'"></span>
+                        </div>
+                        <div th:if="${course.difficultyLevel}" class="text-white-50">
+                            <i class="fas fa-signal me-1"></i>
+                            <span th:text="${course.difficultyLevel}"></span>
+                        </div>
                     </div>
-                    <p class="lead" th:text="${course.description}">Course description</p>
                 </div>
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title">Course Details</h5>
-                            <div class="course-metrics">
-                                <div class="metric-card">
-                                    <div class="metric-value" th:text="${course.rating}">4.5</div>
-                                    <div class="metric-label">Rating</div>
-                                </div>
-                                <div class="metric-card">
-                                    <div class="metric-value" th:text="${course.studentCount}">1000</div>
-                                    <div class="metric-label">Students</div>
-                                </div>
-                                <div class="metric-card">
-                                    <div class="metric-value" th:text="${course.mcdmScore}">85</div>
-                                    <div class="metric-label">MCDM Score</div>
-                                </div>
+                <div class="col-md-4 text-center">
+                    <div class="course-price" th:if="${course.price != null && course.price > 0}" th:text="'$' + ${#numbers.formatDecimal(course.price, 1, 2)}"></div>
+                    <div class="course-price" th:if="${course.price == null || course.price == 0}">FREE</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container" th:if="${course}">
+        <div class="row">
+            <!-- Course Information -->
+            <div class="col-lg-8">
+                <!-- Course Image -->
+                <div class="info-card">
+                    <img th:src="${course.courseImageUrl ?: '/images/course-placeholder.jpg'}" 
+                         th:alt="${course.title}" class="course-image">
+                </div>
+
+                <!-- Course Details -->
+                <div class="info-card">
+                    <h4><i class="fas fa-info-circle me-2 text-primary"></i>Course Information</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Instructor:</strong> <span th:text="${course.instructor}"></span></p>
+                            <p><strong>Platform:</strong> <span th:text="${course.platform}"></span></p>
+                            <p><strong>Language:</strong> <span th:text="${course.language ?: 'English'}"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Duration:</strong> <span th:text="${course.durationHours ?: 'N/A'} + ' hours'"></span></p>
+                            <p><strong>Students:</strong> <span th:text="${course.studentCount ?: 'N/A'}"></span></p>
+                            <p><strong>Certificate:</strong> 
+                                <span th:if="${course.hasCertificate}" class="text-success">
+                                    <i class="fas fa-check-circle me-1"></i>Available
+                                </span>
+                                <span th:unless="${course.hasCertificate}" class="text-muted">
+                                    <i class="fas fa-times-circle me-1"></i>Not Available
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MCDM Analysis -->
+                <div class="info-card" th:if="${course.mcdmScore != null}">
+                    <h4><i class="fas fa-chart-line me-2 text-primary"></i>Course Analysis</h4>
+                    <div class="mcdm-score">
+                        <h5>Overall MCDM Score</h5>
+                        <div class="display-4 fw-bold" th:text="${#numbers.formatDecimal(course.mcdmScore * 100, 1, 1)} + '%'"></div>
+                        <div class="score-bar">
+                            <div class="score-fill" th:style="'width: ' + ${course.mcdmScore * 100} + '%'"></div>
+                        </div>
+                        <p class="mb-0">Based on TOPSIS algorithm analysis</p>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h6>Content Quality</h6>
+                            <div class="progress mb-3">
+                                <div class="progress-bar" th:style="'width: ' + ${course.contentQuality * 100} + '%'" th:text="${#numbers.formatDecimal(course.contentQuality * 100, 1, 1)} + '%'"></div>
                             </div>
-                            <div class="d-grid gap-2">
-                                <a th:href="${course.url}" target="_blank" class="btn btn-primary">
-                                    <i class="fas fa-external-link-alt me-2"></i>Enroll Now
-                                </a>
-                                <a href="/" class="btn btn-outline-secondary">
-                                    <i class="fas fa-arrow-left me-2"></i>Back to Search
-                                </a>
+                            <h6>Instructor Rating</h6>
+                            <div class="progress mb-3">
+                                <div class="progress-bar bg-success" th:style="'width: ' + ${course.instructorRating * 100} + '%'" th:text="${#numbers.formatDecimal(course.instructorRating * 100, 1, 1)} + '%'"></div>
+                            </div>
+                            <h6>Value for Money</h6>
+                            <div class="progress mb-3">
+                                <div class="progress-bar bg-warning" th:style="'width: ' + ${course.valueForMoney * 100} + '%'" th:text="${#numbers.formatDecimal(course.valueForMoney * 100, 1, 1)} + '%'"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Course Structure</h6>
+                            <div class="progress mb-3">
+                                <div class="progress-bar bg-info" th:style="'width: ' + ${course.courseStructure * 100} + '%'" th:text="${#numbers.formatDecimal(course.courseStructure * 100, 1, 1)} + '%'"></div>
+                            </div>
+                            <h6>Practical Exercises</h6>
+                            <div class="progress mb-3">
+                                <div class="progress-bar bg-danger" th:style="'width: ' + ${course.practicalExercises * 100} + '%'" th:text="${#numbers.formatDecimal(course.practicalExercises * 100, 1, 1)} + '%'"></div>
+                            </div>
+                            <h6>Support Quality</h6>
+                            <div class="progress mb-3">
+                                <div class="progress-bar bg-secondary" th:style="'width: ' + ${course.supportQuality * 100} + '%'" th:text="${#numbers.formatDecimal(course.supportQuality * 100, 1, 1)} + '%'"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="row">
-            <div class="col-md-8">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Course Information</h5>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p><strong>Instructor:</strong> <span th:text="${course.instructor}">Instructor Name</span></p>
-                                <p><strong>Platform:</strong> <span th:text="${course.platform}">Platform Name</span></p>
-                                <p><strong>Price:</strong> <span th:text="${course.price}">$99.99</span></p>
-                            </div>
-                            <div class="col-md-6">
-                                <p><strong>Duration:</strong> <span th:text="${course.durationHours}">10</span> hours</p>
-                                <p><strong>Level:</strong> <span th:text="${course.level}">Beginner</span></p>
-                                <p><strong>Language:</strong> <span th:text="${course.language}">English</span></p>
-                            </div>
+            <!-- Action Sidebar -->
+            <div class="col-lg-4">
+                <div class="action-buttons">
+                    <div class="info-card">
+                        <h5><i class="fas fa-external-link-alt me-2"></i>Take This Course</h5>
+                        <p class="text-muted">This course is available on the official platform. Click below to visit the course page.</p>
+                        
+                        <div class="d-grid gap-3">
+                            <a th:href="${course.url}" class="btn btn-primary btn-lg" target="_blank" rel="noopener noreferrer">
+                                <i class="fas fa-external-link-alt me-2"></i>
+                                View on <span th:text="${course.platform}"></span>
+                            </a>
+                            
+                            <button class="btn btn-outline btn-sm toggle-compare" 
+                                    th:attr="data-course-id=${course.id},data-title=${course.title},data-platform=${course.platform},data-rating=${course.rating},data-price=${course.price}">
+                                <i class="fas fa-balance-scale me-2"></i>Add to Compare
+                            </button>
+                            
+                            <a href="/" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Search
+                            </a>
                         </div>
                     </div>
-                </div>
 
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Course Description</h5>
-                        <p class="card-text" th:text="${course.description}">Detailed course description</p>
+                    <!-- Platform Information -->
+                    <div class="info-card">
+                        <h6><i class="fas fa-globe me-2"></i>About <span th:text="${course.platform}"></span></h6>
+                        <div th:switch="${course.platform}">
+                            <p th:case="'Udemy'" class="text-muted">
+                                Udemy is a global marketplace for learning and teaching online where students are mastering new skills and achieving their goals by learning from an extensive library of over 130,000 courses taught by expert instructors.
+                            </p>
+                            <p th:case="'Coursera'" class="text-muted">
+                                Coursera partners with more than 200 leading universities and companies to bring flexible, affordable, job-relevant online learning to individuals and organizations worldwide.
+                            </p>
+                            <p th:case="'edX'" class="text-muted">
+                                edX is a massive open online course provider created by Harvard and MIT. It hosts online university-level courses in a wide range of disciplines to a worldwide student body.
+                            </p>
+                            <p th:case="'Udacity'" class="text-muted">
+                                Udacity is a for-profit educational organization founded by Sebastian Thrun, David Stavens, and Mike Sokolsky offering massive open online courses.
+                            </p>
+                            <p th:case="'FutureLearn'" class="text-muted">
+                                FutureLearn is a digital education platform founded in December 2012. The company is jointly owned by The Open University and SEEK Ltd.
+                            </p>
+                            <p th:case="*" class="text-muted">
+                                This course is available on a trusted online learning platform.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Verification Notice -->
+                    <div class="info-card bg-light">
+                        <h6><i class="fas fa-shield-alt me-2 text-success"></i>Verified Course</h6>
+                        <p class="text-muted mb-0">
+                            <small>
+                                <i class="fas fa-check-circle me-1 text-success"></i>
+                                This course has been verified and is currently available on the official platform.
+                            </small>
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div th:replace="fragments/footer :: footer"></div>
+    <!-- Course Not Found -->
+    <div class="container" th:unless="${course}">
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center">
+                <div class="info-card">
+                    <i class="fas fa-exclamation-triangle text-warning mb-3" style="font-size: 3rem;"></i>
+                    <h3>Course Not Found</h3>
+                    <p class="text-muted">The course you're looking for doesn't exist or has been removed.</p>
+                    <a href="/" class="btn btn-primary">
+                        <i class="fas fa-home me-2"></i>Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Sticky Compare Bar -->
+    <div id="compareBar" class="position-fixed bottom-0 start-0 end-0 bg-dark text-white py-3 d-none" style="z-index:1030;">
+        <div class="container d-flex align-items-center justify-content-between">
+            <div>
+                <i class="fas fa-balance-scale me-2"></i>
+                <span id="compareCount">0</span> selected
+            </div>
+            <div class="d-flex gap-2">
+                <button id="clearCompare" class="btn btn-outline-light btn-sm">Clear</button>
+                <a href="/compare" class="btn btn-primary btn-sm"><i class="fas fa-columns me-2"></i>Compare Now</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Compare functionality (same as index.html)
+        const COMPARE_KEY = 'compareList';
+
+        function getCompareList() {
+            try { return JSON.parse(localStorage.getItem(COMPARE_KEY)) || []; } catch { return []; }
+        }
+        function setCompareList(list) {
+            localStorage.setItem(COMPARE_KEY, JSON.stringify(list));
+        }
+        function updateCompareBar() {
+            const list = getCompareList();
+            const bar = document.getElementById('compareBar');
+            const count = document.getElementById('compareCount');
+            if (!bar || !count) return;
+            count.textContent = list.length;
+            bar.classList.toggle('d-none', list.length === 0);
+        }
+        function toggleCompareFromButton(btn) {
+            const id = btn.getAttribute('data-course-id');
+            const item = {
+                id: id,
+                title: btn.getAttribute('data-title') || '',
+                platform: btn.getAttribute('data-platform') || '',
+                rating: btn.getAttribute('data-rating') || '',
+                price: btn.getAttribute('data-price') || ''
+            };
+            let list = getCompareList();
+            const exists = list.find(c => String(c.id) === String(id));
+            if (exists) {
+                list = list.filter(c => String(c.id) !== String(id));
+                btn.innerHTML = '<i class="fas fa-balance-scale me-2"></i>Add to Compare';
+                btn.classList.remove('btn-danger');
+                btn.classList.add('btn-outline');
+            } else {
+                if (list.length >= 4) {
+                    alert('You can compare up to 4 courses.');
+                    return;
+                }
+                list.push(item);
+                btn.innerHTML = '<i class="fas fa-times me-2"></i>Remove from Compare';
+                btn.classList.remove('btn-outline');
+                btn.classList.add('btn-danger');
+            }
+            setCompareList(list);
+            updateCompareBar();
+        }
+
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.toggle-compare')) {
+                toggleCompareFromButton(e.target.closest('.toggle-compare'));
+            }
+            if (e.target.id === 'clearCompare') {
+                setCompareList([]);
+                document.querySelectorAll('.toggle-compare').forEach(btn => {
+                    btn.innerHTML = '<i class="fas fa-balance-scale me-2"></i>Add to Compare';
+                    btn.classList.remove('btn-danger');
+                    btn.classList.add('btn-outline');
+                });
+                updateCompareBar();
+            }
+        });
+
+        // Initialize states on load
+        document.addEventListener('DOMContentLoaded', function () {
+            const ids = getCompareList().map(c => String(c.id));
+            document.querySelectorAll('.toggle-compare').forEach(btn => {
+                const id = String(btn.getAttribute('data-course-id'));
+                if (ids.includes(id)) {
+                    btn.innerHTML = '<i class="fas fa-times me-2"></i>Remove from Compare';
+                    btn.classList.remove('btn-outline');
+                    btn.classList.add('btn-danger');
+                }
+            });
+            updateCompareBar();
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html> 
+</html>

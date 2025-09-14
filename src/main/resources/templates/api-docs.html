@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>API Documentation - Course Comparison Platform</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #10b981;
+            --accent-color: #f59e0b;
+            --dark-color: #1f2937;
+            --light-color: #f8fafc;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-color);
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), #4f46e5);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), #4f46e5);
+            color: white;
+            padding: 60px 0;
+            margin-bottom: 40px;
+        }
+        
+        .api-endpoint {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .method-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .method-get { background: var(--secondary-color); color: white; }
+        .method-post { background: var(--accent-color); color: white; }
+        .method-put { background: #3b82f6; color: white; }
+        .method-delete { background: #ef4444; color: white; }
+        
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        
+        .swagger-iframe {
+            width: 100%;
+            height: 800px;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-graduation-cap me-2"></i>Course Comparison
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="fas fa-home me-1"></i>Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/courses"><i class="fas fa-list me-1"></i>All Courses</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/api-docs"><i class="fas fa-code me-1"></i>API Docs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about"><i class="fas fa-info-circle me-1"></i>About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold mb-4">API Documentation</h1>
+            <p class="lead mb-5">Comprehensive REST API for course comparison using advanced MCDM algorithms</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Quick Start -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-rocket me-2"></i>Quick Start</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Our API provides comprehensive endpoints for course search, comparison, and ranking using TOPSIS, AHP, and personalized MCDM algorithms.</p>
+                        
+                        <h6>Base URL:</h6>
+                        <div class="code-block">https://your-domain.com/api</div>
+                        
+                        <h6 class="mt-3">Authentication:</h6>
+                        <p>Currently, the API is open and doesn't require authentication. Future versions will include JWT-based authentication.</p>
+                        
+                        <h6 class="mt-3">Response Format:</h6>
+                        <p>All responses are in JSON format with appropriate HTTP status codes.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Endpoints -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <h3 class="mb-4"><i class="fas fa-list me-2"></i>API Endpoints</h3>
+                
+                <!-- Search Courses -->
+                <div class="api-endpoint">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="method-badge method-get me-3">GET</span>
+                        <h5 class="mb-0">/api/courses/search</h5>
+                    </div>
+                    <p class="text-muted">Search courses by keyword with optional MCDM algorithm selection</p>
+                    
+                    <h6>Parameters:</h6>
+                    <ul>
+                        <li><strong>keyword</strong> (required): Search term for courses</li>
+                        <li><strong>algorithm</strong> (optional): MCDM algorithm (TOPSIS, AHP, PERSONALIZED)</li>
+                    </ul>
+                    
+                    <h6>Example Request:</h6>
+                    <div class="code-block">GET /api/courses/search?keyword=python&algorithm=TOPSIS</div>
+                </div>
+
+                <!-- Advanced Search -->
+                <div class="api-endpoint">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="method-badge method-post me-3">POST</span>
+                        <h5 class="mb-0">/api/courses/advanced-search</h5>
+                    </div>
+                    <p class="text-muted">Advanced search with multiple filters and criteria</p>
+                    
+                    <h6>Request Body:</h6>
+                    <div class="code-block">{
+  "keyword": "machine learning",
+  "filters": {
+    "minPrice": 0,
+    "maxPrice": 100,
+    "minRating": 4.0,
+    "platform": "Coursera",
+    "difficulty": "Intermediate"
+  },
+  "algorithm": "TOPSIS"
+}</div>
+                </div>
+
+                <!-- Course Ranking -->
+                <div class="api-endpoint">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="method-badge method-post me-3">POST</span>
+                        <h5 class="mb-0">/api/courses/rank</h5>
+                    </div>
+                    <p class="text-muted">Rank courses using specified MCDM algorithm</p>
+                    
+                    <h6>Request Body:</h6>
+                    <div class="code-block">[
+  {
+    "id": 1,
+    "title": "Python Course",
+    "rating": 4.5,
+    "price": 29.99
+  }
+]</div>
+                </div>
+
+                <!-- Platform Courses -->
+                <div class="api-endpoint">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="method-badge method-get me-3">GET</span>
+                        <h5 class="mb-0">/api/courses/platform/{platform}</h5>
+                    </div>
+                    <p class="text-muted">Get courses from a specific platform</p>
+                    
+                    <h6>Example:</h6>
+                    <div class="code-block">GET /api/courses/platform/Coursera</div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="api-endpoint">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="method-badge method-get me-3">GET</span>
+                        <h5 class="mb-0">/api/courses/page</h5>
+                    </div>
+                    <p class="text-muted">Get courses with pagination and sorting</p>
+                    
+                    <h6>Parameters:</h6>
+                    <ul>
+                        <li><strong>page</strong>: Page number (default: 0)</li>
+                        <li><strong>size</strong>: Page size (default: 20)</li>
+                        <li><strong>sortBy</strong>: Sort field (default: rating)</li>
+                        <li><strong>sortDir</strong>: Sort direction (asc/desc, default: desc)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- MCDM Algorithms -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <h3 class="mb-4"><i class="fas fa-brain me-2"></i>MCDM Algorithms</h3>
+                
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">TOPSIS</h5>
+                                <p class="card-text">Technique for Order of Preference by Similarity to Ideal Solution. Provides comprehensive multi-criteria decision making.</p>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success me-2"></i>Normalizes criteria values</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Calculates ideal solutions</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Ranks by similarity</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">AHP</h5>
+                                <p class="card-text">Analytic Hierarchy Process. Uses pairwise comparisons to determine criteria weights and course rankings.</p>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success me-2"></i>Pairwise comparisons</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Consistency checking</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Weighted scoring</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">Personalized</h5>
+                                <p class="card-text">Custom algorithm that considers user preferences, interests, and learning history for personalized recommendations.</p>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success me-2"></i>User preferences</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Interest matching</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Learning history</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Swagger UI -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <h3 class="mb-4"><i class="fas fa-play me-2"></i>Interactive API Explorer</h3>
+                <div class="card">
+                    <div class="card-body p-0">
+                        <iframe src="/swagger-ui/index.html" class="swagger-iframe"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <h3 class="mb-4"><i class="fas fa-chart-line me-2"></i>Performance & Monitoring</h3>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header bg-success text-white">
+                                <h6 class="mb-0"><i class="fas fa-heartbeat me-2"></i>Health Check</h6>
+                            </div>
+                            <div class="card-body">
+                                <p>Monitor system health and performance metrics</p>
+                                <div class="code-block">GET /api/performance/health</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header bg-info text-white">
+                                <h6 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Metrics</h6>
+                            </div>
+                            <div class="card-body">
+                                <p>Get detailed performance metrics and statistics</p>
+                                <div class="code-block">GET /api/performance/metrics</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <h5><i class="fas fa-graduation-cap me-2"></i>Course Comparison Platform</h5>
+                    <p>Advanced course comparison using MCDM algorithms for informed learning decisions.</p>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <h6>API Resources</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="/swagger-ui/index.html" class="text-light">Swagger UI</a></li>
+                        <li class="mb-2"><a href="/api/performance/health" class="text-light">Health Check</a></li>
+                        <li class="mb-2"><a href="/actuator" class="text-light">Actuator Endpoints</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2025 Course Comparison Platform. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

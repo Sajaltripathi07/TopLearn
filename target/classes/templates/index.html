@@ -1,165 +1,147 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Course Comparison</title>
+    <title>Course Comparison Platform</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #4361ee;
-            --secondary-color: #3f37c9;
-            --accent-color: #4cc9f0;
-            --light-color: #f8f9fa;
-            --dark-color: #212529;
+            --primary-color: #6366f1;
+            --secondary-color: #10b981;
+            --accent-color: #f59e0b;
+            --dark-color: #1f2937;
+            --light-color: #f8fafc;
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7fa;
-            color: var(--dark-color);
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-color);
         }
         
         .navbar {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(135deg, var(--primary-color), #4f46e5);
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
         .hero-section {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(135deg, var(--primary-color), #4f46e5);
             color: white;
             padding: 80px 0;
-            margin-bottom: 50px;
-            border-radius: 0 0 20px 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
         }
         
-        .hero-title {
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-        
-        .hero-subtitle {
-            font-weight: 300;
-            margin-bottom: 30px;
-        }
-        
-        .search-box {
+        .search-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             max-width: 600px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 30px;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
         }
         
-        .search-box input {
-            border-radius: 30px;
-            padding: 15px 25px;
+        .search-input {
             border: none;
+            padding: 15px 20px;
+            border-radius: 15px;
+            font-size: 16px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
-        .search-box button {
-            border-radius: 30px;
-            padding: 15px 30px;
-            background-color: var(--accent-color);
+        .search-button {
+            background: var(--accent-color);
             border: none;
+            padding: 15px 30px;
+            border-radius: 15px;
             font-weight: 600;
             transition: all 0.3s ease;
         }
         
-        .search-box button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        .search-button:hover {
+            background: #d97706;
+            transform: translateY(-2px);
         }
         
         .card {
             border: none;
             border-radius: 15px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
             overflow: hidden;
-            margin-bottom: 30px;
         }
         
         .card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
         }
         
-        .card-header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        .course-platform {
+            background: var(--primary-color);
             color: white;
-            border: none;
-            padding: 20px;
-        }
-        
-        .card-title {
-            margin: 0;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
             font-weight: 600;
         }
         
-        .list-group-item {
-            border: none;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            transition: all 0.3s ease;
-            background-color: var(--light-color);
+        .course-difficulty {
+            background: var(--secondary-color);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
         }
         
-        .list-group-item:hover {
-            background-color: var(--primary-color);
+        .course-rating {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+        
+        .course-price {
+            background: var(--secondary-color);
             color: white;
-            transform: translateX(5px);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
         }
         
         .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+            font-size: 3rem;
             color: var(--primary-color);
+            margin-bottom: 1rem;
         }
         
-        .section-title {
-            position: relative;
-            margin-bottom: 40px;
-            font-weight: 700;
-        }
-        
-        .section-title:after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 0;
-            width: 50px;
-            height: 4px;
+        .btn-primary {
             background: var(--primary-color);
-            border-radius: 2px;
-        }
-        
-        .platform-badge {
-            display: inline-block;
-            padding: 8px 15px;
-            border-radius: 20px;
-            background-color: var(--light-color);
-            color: var(--dark-color);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
             font-weight: 600;
-            margin: 5px;
             transition: all 0.3s ease;
         }
         
-        .platform-badge:hover {
-            background-color: var(--primary-color);
-            color: white;
-            transform: translateY(-3px);
+        .btn-primary:hover {
+            background: #4f46e5;
+            transform: translateY(-2px);
         }
         
-        footer {
-            background-color: var(--dark-color);
+        .btn-outline {
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            background: transparent;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary-color);
             color: white;
-            padding: 40px 0;
-            margin-top: 50px;
         }
     </style>
 </head>
@@ -170,151 +152,384 @@
             <a class="navbar-brand" href="/">
                 <i class="fas fa-graduation-cap me-2"></i>Course Comparison
             </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="fas fa-home me-1"></i>Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/courses"><i class="fas fa-list me-1"></i>All Courses</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/criteria"><i class="fas fa-sliders-h me-1"></i>Customize Criteria</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/api-docs"><i class="fas fa-code me-1"></i>API Docs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about"><i class="fas fa-info-circle me-1"></i>About</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="container text-center">
-            <h1 class="hero-title">Find Your Perfect Course</h1>
-            <p class="hero-subtitle">Compare courses from multiple providers to make the best learning decision</p>
+            <h1 class="display-4 fw-bold mb-4">Find Your Perfect Course</h1>
+            <p class="lead mb-5">Compare courses from multiple platforms using advanced MCDM algorithms</p>
             
-            <div class="search-box">
+            <div class="search-container">
                 <form th:action="@{/search}" method="get">
-                    <div class="input-group">
-                        <input type="text" class="form-control" name="keyword" 
-                               th:value="${searchTerm}" placeholder="Search for courses...">
-                        <button class="btn btn-light" type="submit">
+                    <div class="input-group position-relative">
+                        <input id="mainSearch" type="text" class="form-control search-input" name="keyword" 
+                               th:value="${searchTerm}" placeholder="Search for courses, topics, or instructors..." autocomplete="off">
+                        <button class="btn btn-light search-button" type="submit">
                             <i class="fas fa-search me-2"></i>Search
                         </button>
+                        <!-- Typeahead suggestions -->
+                        <div id="searchSuggestions" class="position-absolute w-100 bg-white shadow rounded mt-2 d-none" style="top: 100%; z-index: 1050; max-height: 260px; overflow-y: auto;"></div>
                     </div>
                 </form>
+                
+                <!-- Call to Action for Criteria Customization -->
+                <div class="text-center mt-4">
+                    <p class="text-white-50 mb-3">Want personalized course recommendations?</p>
+                    <a href="/criteria" class="btn btn-outline-light">
+                        <i class="fas fa-sliders-h me-2"></i>Customize Your Criteria
+                    </a>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Main Content -->
     <div class="container">
-        <div class="row">
-            <div class="col-md-6">
+        <!-- Features Section -->
+        <section class="mb-5">
+            <div class="row text-center">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h4>Advanced MCDM Algorithms</h4>
+                            <p class="text-muted">TOPSIS, AHP, and personalized ranking for accurate course recommendations</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h4>Comprehensive Analysis</h4>
+                            <p class="text-muted">Compare content quality, instructor rating, value, and more</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h4>Personalized Experience</h4>
+                            <p class="text-muted">Get recommendations based on your interests and skill level</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topics & Platforms -->
+        <div class="row mb-5">
+            <div class="col-md-6 mb-4">
                 <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title"><i class="fas fa-list me-2"></i>Browse by Topic</h5>
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-book me-2"></i>Browse by Topic</h5>
                     </div>
                     <div class="card-body">
-                        <div class="list-group">
+                        <div class="d-grid gap-2">
                             <a th:each="topic : ${topics}" 
                                th:href="@{/search(keyword=${topic})}" 
-                               class="list-group-item list-group-item-action">
-                                <i class="fas fa-book me-2"></i><span th:text="${topic}"></span>
+                               class="btn btn-outline-primary text-start">
+                                <i class="fas fa-arrow-right me-2"></i>
+                                <span th:text="${topic}"></span>
                             </a>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <div class="col-md-6">
+            <div class="col-md-6 mb-4">
                 <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title"><i class="fas fa-star me-2"></i>Popular Platforms</h5>
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-globe me-2"></i>Popular Platforms</h5>
                     </div>
                     <div class="card-body">
-                        <div class="d-flex flex-wrap">
-                            <a href="/platform/Udemy" class="platform-badge">
-                                <i class="fab fa-udemy me-2"></i>Udemy
+                        <div class="d-grid gap-3">
+                            <a href="/platform/Udemy" class="btn btn-outline-primary text-start">
+                                <i class="fab fa-udemy me-3"></i>Udemy - Learn anything, anywhere
                             </a>
-                            <a href="/platform/Coursera" class="platform-badge">
-                                <i class="fas fa-graduation-cap me-2"></i>Coursera
+                            <a href="/platform/Coursera" class="btn btn-outline-primary text-start">
+                                <i class="fas fa-graduation-cap me-3"></i>Coursera - University-level courses
                             </a>
-                            <a href="/platform/edX" class="platform-badge">
-                                <i class="fas fa-university me-2"></i>edX
-                            </a>
-                            <a href="/platform/LinkedIn" class="platform-badge">
-                                <i class="fab fa-linkedin me-2"></i>LinkedIn
+                            <a href="/platform/edX" class="btn btn-outline-primary text-start">
+                                <i class="fas fa-university me-3"></i>edX - Academic excellence
                             </a>
                         </div>
-                    </div>
-                </div>
-                
-                <div class="card mt-4">
-                    <div class="card-header">
-                        <h5 class="card-title"><i class="fas fa-info-circle me-2"></i>About This Platform</h5>
-                    </div>
-                    <div class="card-body">
-                        <p>Course Comparison helps you find the best online courses by comparing multiple providers and criteria. Our advanced ranking system considers:</p>
-                        <ul>
-                            <li>Content quality and depth</li>
-                            <li>Instructor expertise and teaching style</li>
-                            <li>Value for money</li>
-                            <li>Course structure and organization</li>
-                            <li>Practical exercises and projects</li>
-                            <li>Support quality and community</li>
-                        </ul>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Courses Grid -->
-        <div class="row mt-4">
-            <div th:each="course : ${courses}" class="col-md-4">
-                <div class="card course-card">
-                    <div class="card-body">
-                        <span class="badge bg-primary platform-badge" th:text="${course.platform}"></span>
-                        <h5 class="card-title" th:text="${course.title}"></h5>
-                        <h6 class="card-subtitle mb-2 text-muted" th:text="${course.instructor}"></h6>
-                        <p class="card-text" th:text="${course.description}"></p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="badge bg-success" th:text="${course.rating} + ' ★'"></span>
-                                <span class="badge bg-info" th:text="${course.studentCount} + ' students'"></span>
+        <!-- Featured Courses -->
+        <section class="mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3>Featured Courses</h3>
+                <a href="/courses" class="btn btn-outline-primary">
+                    View All Courses <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+            
+            <div class="row">
+                <div th:each="course : ${courses}" class="col-md-4 mb-4">
+                    <div class="card course-card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <span class="course-platform" th:text="${course.platform}"></span>
+                                <span th:if="${course.difficultyLevel}" class="course-difficulty" th:text="${course.difficultyLevel}"></span>
                             </div>
-                            <div th:if="${course.price != null}">
-                                <span class="badge bg-warning" th:text="'$' + ${#numbers.formatDecimal(course.price, 1, 2)}"></span>
+                            
+                            <h5 class="card-title" th:text="${course.title}"></h5>
+                            <p class="text-muted mb-2" th:text="${course.instructor}"></p>
+                            <p class="card-text" th:text="${course.description}"></p>
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="course-rating">
+                                    <i class="fas fa-star"></i>
+                                    <span th:text="${course.rating}"></span>
+                                </div>
+                                <div class="text-muted" th:text="${course.studentCount} + ' students'"></div>
+                                <div th:if="${course.price != null}" class="course-price" th:text="'$' + ${#numbers.formatDecimal(course.price, 1, 2)}"></div>
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                <a th:href="${course.url}" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                                    <i class="fas fa-external-link-alt me-2"></i>View on <span th:text="${course.platform}"></span>
+                                </a>
+                                <a th:href="${course.url}" class="btn btn-outline-primary btn-sm" target="_blank" rel="noopener noreferrer">
+                                    <i class="fas fa-info-circle me-2"></i>View Details
+                                </a>
+                                <button class="btn btn-outline-secondary btn-sm toggle-compare" 
+                                        th:attr="data-course-id=${course.id},data-title=${course.title},data-platform=${course.platform},data-rating=${course.rating},data-price=${course.price}">
+                                    <i class="fas fa-balance-scale me-2"></i>Add to Compare
+                                </button>
                             </div>
                         </div>
-                        <a th:href="${course.url}" class="btn btn-primary mt-2" target="_blank">View Course</a>
                     </div>
                 </div>
             </div>
-        </div>
+            
+            <!-- No Results Message -->
+            <div th:if="${#lists.isEmpty(courses)}" class="text-center my-5">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-5">
+                        <i class="fas fa-search text-muted mb-3" style="font-size: 3rem;"></i>
+                        <h3>No courses found</h3>
+                        <p class="text-muted">Try a different search term or check back later for new courses.</p>
+                        <a href="/courses" class="btn btn-primary">
+                            <i class="fas fa-list me-2"></i>Browse All Courses
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
 
-        <!-- No Results Message -->
-        <div th:if="${#lists.isEmpty(courses)}" class="text-center my-5">
-            <h3>No courses found</h3>
-            <p>Try a different search term or check back later for new courses.</p>
+    <!-- Sticky Compare Bar -->
+    <div id="compareBar" class="position-fixed bottom-0 start-0 end-0 bg-dark text-white py-3 d-none" style="z-index:1030;">
+        <div class="container d-flex align-items-center justify-content-between">
+            <div>
+                <i class="fas fa-balance-scale me-2"></i>
+                <span id="compareCount">0</span> selected
+            </div>
+            <div class="d-flex gap-2">
+                <button id="clearCompare" class="btn btn-outline-light btn-sm">Clear</button>
+                <a href="/compare" class="btn btn-primary btn-sm"><i class="fas fa-columns me-2"></i>Compare Now</a>
+            </div>
         </div>
     </div>
 
+    <script>
+        // Compare List in localStorage
+        const COMPARE_KEY = 'compareList';
+
+        function getCompareList() {
+            try { return JSON.parse(localStorage.getItem(COMPARE_KEY)) || []; } catch { return []; }
+        }
+        function setCompareList(list) {
+            localStorage.setItem(COMPARE_KEY, JSON.stringify(list));
+        }
+        function updateCompareBar() {
+            const list = getCompareList();
+            const bar = document.getElementById('compareBar');
+            const count = document.getElementById('compareCount');
+            if (!bar || !count) return;
+            count.textContent = list.length;
+            bar.classList.toggle('d-none', list.length === 0);
+        }
+        function toggleCompareFromButton(btn) {
+            const id = btn.getAttribute('data-course-id');
+            const item = {
+                id: id,
+                title: btn.getAttribute('data-title') || '',
+                platform: btn.getAttribute('data-platform') || '',
+                rating: btn.getAttribute('data-rating') || '',
+                price: btn.getAttribute('data-price') || ''
+            };
+            let list = getCompareList();
+            const exists = list.find(c => String(c.id) === String(id));
+            if (exists) {
+                list = list.filter(c => String(c.id) !== String(id));
+                btn.innerHTML = '<i class="fas fa-balance-scale me-2"></i>Add to Compare';
+                btn.classList.remove('btn-danger');
+                btn.classList.add('btn-outline-primary');
+            } else {
+                if (list.length >= 4) {
+                    alert('You can compare up to 4 courses.');
+                    return;
+                }
+                list.push(item);
+                btn.innerHTML = '<i class="fas fa-times me-2"></i>Remove from Compare';
+                btn.classList.remove('btn-outline-primary');
+                btn.classList.add('btn-danger');
+            }
+            setCompareList(list);
+            updateCompareBar();
+        }
+
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.toggle-compare')) {
+                toggleCompareFromButton(e.target.closest('.toggle-compare'));
+            }
+            if (e.target.id === 'clearCompare') {
+                setCompareList([]);
+                document.querySelectorAll('.toggle-compare').forEach(btn => {
+                    btn.innerHTML = '<i class="fas fa-balance-scale me-2"></i>Add to Compare';
+                    btn.classList.remove('btn-danger');
+                    btn.classList.add('btn-outline-primary');
+                });
+                updateCompareBar();
+            }
+        });
+
+        // Initialize states on load
+        document.addEventListener('DOMContentLoaded', function () {
+            const ids = getCompareList().map(c => String(c.id));
+            document.querySelectorAll('.toggle-compare').forEach(btn => {
+                const id = String(btn.getAttribute('data-course-id'));
+                if (ids.includes(id)) {
+                    btn.innerHTML = '<i class="fas fa-times me-2"></i>Remove from Compare';
+                    btn.classList.remove('btn-outline-primary');
+                    btn.classList.add('btn-danger');
+                }
+            });
+            updateCompareBar();
+            initTypeahead();
+        });
+
+        // --- Typeahead ---
+        function initTypeahead() {
+            const input = document.getElementById('mainSearch');
+            const box = document.getElementById('searchSuggestions');
+            if (!input || !box) return;
+
+            // Build source list: topics on page + common platforms + hint placeholders
+            const topics = Array.from(document.querySelectorAll('a[th\\:href^=\"@{/search\"] span'))
+                .map(el => el.textContent.trim()).filter(Boolean);
+            const platforms = ['Udemy','Coursera','edX','LinkedIn Learning','Pluralsight'];
+            const instructors = []; // Could be populated server-side later
+            const source = Array.from(new Set([...topics, ...platforms, ...instructors]));
+
+            let lastTerm = '';
+            let debounceTimer;
+
+            input.addEventListener('input', () => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    const q = (input.value || '').trim().toLowerCase();
+                    if (!q) { box.classList.add('d-none'); box.innerHTML=''; return; }
+                    if (q === lastTerm) return; lastTerm = q;
+                    const matches = source.filter(s => s.toLowerCase().includes(q)).slice(0, 10);
+                    renderSuggestions(matches, q, box, input);
+                }, 120);
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!box.contains(e.target) && e.target !== input) {
+                    box.classList.add('d-none');
+                }
+            });
+        }
+
+        function renderSuggestions(items, query, box, input) {
+            if (!items.length) { box.classList.add('d-none'); box.innerHTML=''; return; }
+            box.innerHTML = items.map(text => {
+                const safe = text.replace(/</g,'&lt;');
+                return `<button type="button" class="list-group-item list-group-item-action border-0 px-3 py-2 text-start w-100 suggestion-item" data-value="${safe}">
+                    <i class=\"fas fa-search me-2 text-muted\"></i>${safe}
+                </button>`;
+            }).join('');
+            box.classList.remove('d-none');
+
+            box.querySelectorAll('.suggestion-item').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    input.value = btn.getAttribute('data-value');
+                    box.classList.add('d-none');
+                    // submit enclosing form
+                    const form = input.closest('form');
+                    if (form) form.submit();
+                });
+            });
+        }
+    </script>
+
     <!-- Footer -->
-    <footer>
+    <footer class="bg-dark text-white py-5 mt-5">
         <div class="container">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-4 mb-4">
                     <h5><i class="fas fa-graduation-cap me-2"></i>Course Comparison</h5>
-                    <p>Helping learners make informed decisions by comparing courses from multiple providers.</p>
+                    <p>Advanced course comparison platform using MCDM algorithms to help learners make informed decisions.</p>
                 </div>
-                <div class="col-md-3">
-                    <h5>Quick Links</h5>
+                <div class="col-md-4 mb-4">
+                    <h6>Quick Links</h6>
                     <ul class="list-unstyled">
-                        <li><a href="/" class="text-light">Home</a></li>
-                        <li><a href="/search" class="text-light">All Courses</a></li>
+                        <li class="mb-2"><a href="/" class="text-light">Home</a></li>
+                        <li class="mb-2"><a href="/courses" class="text-light">All Courses</a></li>
+                        <li class="mb-2"><a href="/about" class="text-light">About</a></li>
                     </ul>
                 </div>
-                <div class="col-md-3">
-                    <h5>Contact</h5>
-                    <ul class="list-unstyled">
-                        <li><i class="fas fa-envelope me-2"></i>support@coursecomparison.com</li>
-                    </ul>
+                <div class="col-md-4 mb-4">
+                    <h6>Contact</h6>
+                    <p class="mb-0">Need help? Contact our support team.</p>
                 </div>
             </div>
-            <hr class="mt-4 mb-4">
+            <hr class="my-4">
             <div class="text-center">
-                <p>&copy; 2025 Course Comparison. All rights reserved.</p>
+                <p class="mb-0">&copy; 2025 Course Comparison Platform. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html> 

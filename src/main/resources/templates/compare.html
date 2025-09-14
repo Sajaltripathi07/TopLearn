@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Compare Courses - Course Comparison Platform</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg,#6366f1,#4f46e5);">
+        <div class="container">
+            <a class="navbar-brand" href="/"><i class="fas fa-graduation-cap me-2"></i>Course Comparison</a>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3">Side-by-side Comparison</h1>
+            <div>
+                <button id="clearCompare" class="btn btn-outline-secondary btn-sm me-2">Clear</button>
+                <a href="/" class="btn btn-primary btn-sm">Back to Home</a>
+            </div>
+        </div>
+
+        <div id="emptyState" class="text-center py-5 d-none">
+            <i class="fas fa-balance-scale mb-3" style="font-size:3rem;color:#6366f1;"></i>
+            <h3>No courses selected</h3>
+            <p class="text-muted">Add up to 4 courses to compare from the home page.</p>
+            <a href="/" class="btn btn-primary">Browse Courses</a>
+        </div>
+
+        <div id="compareTableWrapper" class="table-responsive d-none">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th id="col-0"></th>
+                        <th id="col-1"></th>
+                        <th id="col-2"></th>
+                        <th id="col-3"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Title</th>
+                        <td id="title-0"></td>
+                        <td id="title-1"></td>
+                        <td id="title-2"></td>
+                        <td id="title-3"></td>
+                    </tr>
+                    <tr>
+                        <th>Platform</th>
+                        <td id="platform-0"></td>
+                        <td id="platform-1"></td>
+                        <td id="platform-2"></td>
+                        <td id="platform-3"></td>
+                    </tr>
+                    <tr>
+                        <th>Rating</th>
+                        <td id="rating-0"></td>
+                        <td id="rating-1"></td>
+                        <td id="rating-2"></td>
+                        <td id="rating-3"></td>
+                    </tr>
+                    <tr>
+                        <th>Price</th>
+                        <td id="price-0"></td>
+                        <td id="price-1"></td>
+                        <td id="price-2"></td>
+                        <td id="price-3"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2025 Course Comparison Platform. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const KEY = 'compareList';
+        function getList(){ try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch { return []; } }
+        function setList(list){ localStorage.setItem(KEY, JSON.stringify(list)); }
+
+        function render(){
+            const list = getList();
+            const empty = document.getElementById('emptyState');
+            const table = document.getElementById('compareTableWrapper');
+            
+            if (!list || list.length === 0){
+                empty.classList.remove('d-none');
+                table.classList.add('d-none');
+                return;
+            }
+
+            empty.classList.add('d-none');
+            table.classList.remove('d-none');
+
+            for (let i = 0; i < 4; i++){
+                const item = list[i];
+                document.getElementById('col-' + i).textContent = item ? item.title : '';
+                document.getElementById('title-' + i).textContent = item ? item.title : '';
+                document.getElementById('platform-' + i).textContent = item ? item.platform : '';
+                document.getElementById('rating-' + i).textContent = item ? (item.rating || '-') : '';
+                document.getElementById('price-' + i).textContent = item ? (item.price ? ('$' + Number(item.price).toFixed(2)) : 'Free') : '';
+            }
+        }
+
+        document.getElementById('clearCompare').addEventListener('click', () => {
+            setList([]);
+            render();
+        });
+
+        document.addEventListener('DOMContentLoaded', render);
+    </script>
+</body>
+</html>
